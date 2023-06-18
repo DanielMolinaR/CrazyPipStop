@@ -12,6 +12,10 @@ module.exports = {
         'cps-brown': "#562900",
         'cps-deep-red': "#4f0606"
         },
+        backgroundImage: {
+          'red-background': "url('./assets/red-background.png')",
+          'gray-pattern': "url('./assets/gray-pattern.png')",
+        }
       },
     },
     plugins: [],

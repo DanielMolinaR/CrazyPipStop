@@ -1,28 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
-import CpsButtonBig from './components/CpsButtonBig';
-import CpsButtonSmall from './components/CpsButtonSmall';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from 'react-native';
+
+import ComponentsScreen from "./screens/ComponentsScreen"
+import HomeScreen from "./screens/HomeScreen"
+import GameScreen from "./screens/GameScreen"
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View className="w-full h-full bg-red-500">
-      <View className="w-full h-full grid grid-cols-1 gap-y-4 justify-center items-center">
-        <View className="w-2/3 h-24">
-          <CpsButtonBig>
-            <Text className="text-2xl">
-              Test Big Button
-            </Text>
-          </CpsButtonBig>
-        </View>
-        <View className="w-1/2 h-16">
-          <CpsButtonSmall>
-          <Text className="text-xl">
-              Test Small Button
-            </Text>
-          </CpsButtonSmall>
-        </View>
-      </View>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <StatusBar 
+        animated={true}
+        backgroundColor="#000000"
+        barStyle={'default'}
+        showHideTransition={'fade'}
+        hidden={false}
+      />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen key="Home" name='Home' component={HomeScreen} />
+      <Stack.Screen key="Game" name='Game' >{(props) => <GameScreen {...props}/>}</Stack.Screen>
+      <Stack.Screen key="ComponentsScreen" name='ComponentsScreen' component={ComponentsScreen} />
+    </Stack.Navigator>
+  </NavigationContainer>
   );
 }
