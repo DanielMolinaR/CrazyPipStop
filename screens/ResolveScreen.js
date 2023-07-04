@@ -46,37 +46,14 @@ function getMistakePoints(MaxMistakesPoints) {
     return mistakePoints;
 }
 
-function getPenalizationButton(hasPenalization) {
-    let penalizationButton = [];
-    if (hasPenalization) {
-        penalizationButton = (
-            <Pressable key={"penalization"} className="w-[26%] h-[35%] z-10"
-            onPress={() => console.log(hasPenalization)}>
-                <CpsButtonBig>
-                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                        <Text className="text-4xl font-black">
-                            -5"
-                        </Text>
-                    </View>
-                </CpsButtonBig>
-            </Pressable>
-        )
-    } else {
-        penalizationButton = (
-            <View className="w-[26%] h-[35%]">
-            </View>
-        )
-    }
-    return penalizationButton
-}
-
-export default function ResolveScreen({ route, navigation }){
+export default function ResolveScreen({ route }){
 
     let gameMode = route.params.gameMode;
 
     let victoryPoints = getVictoryPoints(gameMode.maxVictoryPoints);
     let mistakePoints = getMistakePoints(gameMode.maxLosePoints);
-    let penalizationButton = getPenalizationButton(gameMode.hasPenalization);
+
+    let [timer, setTimer] = React.useState(gameMode.secondsCounter);
 
     var wrap;
     if (gameMode.maxLosePoints < 5) {
@@ -93,12 +70,11 @@ export default function ResolveScreen({ route, navigation }){
             </View>
             <View className="w-full h-full absolute">
                 <View className="w-full h-[73%]">
-                    <View className="w-full h-1/6 items-center">
+                    <View className="w-full h-[15%] items-center">
                         <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                     </View>
-                    <View className="flex w-full h-3/6 items-center">
-                        {penalizationButton}
-                        <View className="w-2/4 h-[33%] -mt-6 z-0">
+                    <View className="flex w-full h-[30%] items-center justify-center">
+                        <View className="w-2/4 h-[65%] -mt-4">
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
                                     <Text className="text-4xl text-cps-yellow font-black">
@@ -108,17 +84,28 @@ export default function ResolveScreen({ route, navigation }){
                             </CpsButtonBig>
                         </View>
                     </View>
-                    <View className="flex w-full h-[30%] items-center">
-                        <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
-                            onPress={() => console.log(gameMode.hasPenalization)}>
+                    <View className="flex w-full h-[55%] items-center">
+                       <View className="w-3/4 h-[50%] z-0">
                             <CpsButtonBig>
-                                <View className="w-full h-full bg-cps-green rounded-md items-center justify-center">
-                                    <Text className="text-7xl font-black text-white">
-                                        GO
+                                <View className="w-full h-full bg-cps-brown rounded-md items-center justify-end">
+                                    <Text className="text-8xl text-cps-yellow font-black">
+                                        {timer}"
                                     </Text>
                                 </View>
                             </CpsButtonBig>
-                        </Pressable>
+                        </View>
+                        <View className="flex w-full h-[50%] items-center -mt-4 z-10">
+                            <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
+                              onPress={() => navigation.navigate('Resolve', {gameMode: GameMode})}>
+                                <CpsButtonBig>
+                                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                                        <Text className="text-5xl font-black">
+                                            STOP
+                                        </Text>
+                                    </View>
+                                </CpsButtonBig>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
                 <View className="h-[27%] flex items-center justify-center">
