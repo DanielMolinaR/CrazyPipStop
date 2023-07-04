@@ -51,96 +51,80 @@ function getMistakePoints() {
 }
 
 function getPenalizationButton(isPenalized, setIsPenalized) {
-    let penalizationButton = [];
+    let penalizationButton = (
+        <View className="w-[26%] h-[35%]">
+        </View>
+    );
     if (GameMode.hasPenalization) {
+        let backgroundStyle = "bg-cps-yellow";
+        let textStyle = ""
+
         if (isPenalized){
-            penalizationButton = (
-                <Pressable key={"penalization"} className="w-[26%] h-[35%] z-10"
-                onPress={() => setIsPenalized(!isPenalized)}>
-                    <CpsButtonBig>
-                        <View className="w-full h-full bg-cps-red rounded-md items-center justify-center">
-                            <Text className="text-4xl text-white font-black">
-                                -5"
-                            </Text>
-                        </View>
-                    </CpsButtonBig>
-                </Pressable>
-            )
-        } else {
-            penalizationButton = (
-                <Pressable key={"penalization"} className="w-[26%] h-[35%] z-10"
-                onPress={() => setIsPenalized(!isPenalized)}>
-                    <CpsButtonBig>
-                        <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                            <Text className="text-4xl font-black">
-                                -5"
-                            </Text>
-                        </View>
-                    </CpsButtonBig>
-                </Pressable>
-            )
+            backgroundStyle = "bg-cps-red"
+            textStyle = "text-white"
         }
-    } else {
+
         penalizationButton = (
-            <View className="w-[26%] h-[35%]">
-            </View>
+            <Pressable key={"penalization"} className="w-[24%] h-[32%] z-10"
+            onPress={() => setIsPenalized(!isPenalized)}>
+                <CpsButtonBig>
+                    <View className={`w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
+                        <Text className={`text-4xl ${textStyle} font-black`}>
+                            -5"
+                        </Text>
+                    </View>
+                </CpsButtonBig>
+            </Pressable>
         )
     }
+
     return penalizationButton
 }
 
+
+function getMainTimer(isPenalized) {
+    let backgroundStyle = "bg-cps-brown";
+    let textStyle = "text-cps-yellow"
+
+    if (isPenalized) {
+        backgroundStyle = "bg-cps-deep-red"
+        textStyle = "text-cps-red"
+    }
+
+    return (
+        <View className="w-2/4 h-[40%] -mt-5 z-0">
+           <CpsButtonBig>
+              <View className={`flex w-full h-full ${backgroundStyle} rounded-md`}>
+                <Text className={`text-6xl ${textStyle} font-black`}>
+                  {GameMode.secondsCounter}"
+                </Text>
+              </View>
+          </CpsButtonBig>
+        </View>
+    )
+}
+
 function getPenalizedTime(isPenalized) {
-    let penalizationTimeContainer = [];
+    let penalizationTimeContainer = penalizationTimeContainer = (
+        <View className="w-[26%] h-[35%]">
+        </View>
+    );
+
     if (isPenalized) {
         penalizationTimeContainer = (
-            <View className="w-[26%] h-[35%] z-10 -mt-6">
+            <View className="w-[26%] h-[28%] z-10 -mt-4">
                 <CpsButtonBig>
                     <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                        <Text className="text-4xl font-black text-cps-yellow">
+                        <Text className="text-3xl font-black text-cps-yellow">
                             {GameMode.secondsCounter-5}"
                         </Text>
                     </View>
                 </CpsButtonBig>
             </View>
         )
-    } else {
-        penalizationTimeContainer = (
-            <View className="w-[26%] h-[35%]">
-            </View>
-        )
-    }
-    return penalizationTimeContainer
-}
+    } 
 
-
-function getMainTimer(isPenalized) {
-    let mainTimerContainer = [];
-    if (isPenalized) {
-        mainTimerContainer = (
-            <View className="w-2/4 h-[33%] -mt-6 z-0">
-               <CpsButtonBig>
-                  <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                    <Text className="text-4xl text-cps-red font-black">
-                      {GameMode.secondsCounter}"
-                    </Text>
-                  </View>
-              </CpsButtonBig>
-            </View>
-        )
-    } else {
-        mainTimerContainer = (
-            <View className="w-2/4 h-[33%] -mt-6 z-0">
-              <CpsButtonBig>
-                <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                  <Text className="text-4xl text-cps-yellow font-black">
-                   {GameMode.secondsCounter}"
-                  </Text>
-                </View>
-              </CpsButtonBig>
-            </View>
-        )
-    }
-    return mainTimerContainer
+    return penalizationTimeContainer;
 }
 
 export default function GameScreen({ route, navigation }){
@@ -190,8 +174,8 @@ export default function GameScreen({ route, navigation }){
                         {mainTimer}
                         {penalizedTime}
                     </View>
-                    <View className="flex w-full h-[30%] items-center">
-                        <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
+                    <View className="flex w-full h-[36%] items-center">
+                        <Pressable key={"penalization"} className="w-2/4 h-[84%] z-10 -mt-4"
                             onPress={() => navigation.navigate('Resolve', {gameMode: GameMode})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-green rounded-md items-center justify-center">
