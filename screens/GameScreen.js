@@ -4,9 +4,9 @@ import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
 import CpsRoundButton from '../components/CpsRoundButton';
 
-import Logo from "../assets/cps-logo.png"
-import Background from "../assets/red-background-75_9-16.png"
-import Pattern from "../assets/gray-pattern.png"
+import Logo from "../assets/images/cps-logo.png"
+import Background from "../assets/images/red-background-75_9-16.png"
+import Pattern from "../assets/images/gray-pattern.png"
 
 let GameMode;
 
@@ -94,7 +94,7 @@ function getMainTimer(isPenalized) {
     return (
         <View className="w-2/4 h-[40%] -mt-5 z-0">
            <CpsButtonBig>
-              <View className={`flex w-full h-full ${backgroundStyle} rounded-md`}>
+              <View className={`flex w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
                 <Text className={`text-6xl ${textStyle} font-black`}>
                   {GameMode.secondsCounter}"
                 </Text>
@@ -116,7 +116,7 @@ function getPenalizedTime(isPenalized) {
                 <CpsButtonBig>
                     <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
                         <Text className="text-3xl font-black text-cps-yellow">
-                            {GameMode.secondsCounter-5}"
+                            {GameMode.secondsCounter - GameMode.penalizationTime}"
                         </Text>
                     </View>
                 </CpsButtonBig>
@@ -148,6 +148,7 @@ export default function GameScreen({ route, navigation }){
         penalizationButton = getPenalizationButton(isPenalized, setIsPenalized);
         mainTimer = getMainTimer(isPenalized);
         penalizedTime = getPenalizedTime(isPenalized);
+        GameMode.isPenalized = isPenalized
     }, [isPenalized])
 
     var wrap;
@@ -161,7 +162,7 @@ export default function GameScreen({ route, navigation }){
     <View className="w-full h-full max-h-screen">
         <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
             <View className="h-3/4">
-                <ImageBackground className="w-full h-full" source={Background} resizeMode="stretch">
+                <ImageBackground className="w-full h-full" source={Background}>
                 </ImageBackground>
             </View>
             <View className="w-full h-full absolute">

@@ -4,9 +4,9 @@ import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
 import CpsRoundButton from '../components/CpsRoundButton';
 
-import Logo from "../assets/cps-logo.png"
-import Background from "../assets/red-background-33_9-16.png"
-import Pattern from "../assets/gray-pattern.png"
+import Logo from "../assets/images/cps-logo.png"
+import Background from "../assets/images/red-background-33_9-16.png"
+import Pattern from "../assets/images/gray-pattern.png"
 
 function getVictoryPoints(MaxVictoriesPoints) {
     var victoryPoints = [];
@@ -53,8 +53,6 @@ export default function ResolveScreen({ route }){
     let victoryPoints = getVictoryPoints(gameMode.maxVictoryPoints);
     let mistakePoints = getMistakePoints(gameMode.maxLosePoints);
 
-    let [timer, setTimer] = React.useState(gameMode.secondsCounter);
-
     var wrap;
     if (gameMode.maxLosePoints < 5) {
         wrap = "";
@@ -62,11 +60,41 @@ export default function ResolveScreen({ route }){
         wrap = "flex-wrap";
     }
 
+    let [timer, setTimer] = React.useState(0);
+
+    let time = gameMode.secondsCounter;
+
+    if (gameMode.isPenalized) {
+        time = (gameMode.secondsCounter - gameMode.penalizationTime)
+    }
+
+    React.useEffect(() => {
+        console.log("entra")
+        const counter = setTimeout(async function() {
+          function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+          }
+
+          if(time == timer){
+            await sleep(5000)
+          }
+
+          if (timer > 0) {
+            setTimer(timer - 1);
+          }
+        }, 1000)
+      return () => { // this should work flawlessly besides some milliseconds lost here and there 
+        clearTimeout(counter)
+      }
+    }, [timer]);
+
+    setTimer(time)
+
     return (
     <View className="w-full h-full max-h-screen">
         <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
-            <View className="w-full h-1/3 bg-yellow-500 flex justify-end items-center">
-                <ImageBackground className="w-full h-full absolute bottom-0" source={Background} resizeMode='stretch' resizeMethod='auto' />
+            <View className="w-full h-1/3 flex justify-end items-center">
+                <ImageBackground className="w-full h-full" source={Background} />
             </View>
             <View className="w-full h-full absolute">
                 <View className="w-full h-[73%]">
@@ -78,7 +106,7 @@ export default function ResolveScreen({ route }){
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
                                     <Text className="text-4xl text-cps-yellow font-black">
-                                        {gameMode.secondsCounter}"
+                                        {time}"
                                     </Text>
                                 </View>
                             </CpsButtonBig>
