@@ -21,7 +21,7 @@ export default function App() {
         hidden={false}
       />
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen key="Home" name='Home' component={HomeScreen} />
+      <Stack.Screen key="Home" name='Home' component={HomeScreen} options={{unmountOnBlur: true}} />
       <Stack.Screen key="Game" name='Game' >{(props) => <GameScreen {...props}/>}</Stack.Screen>
       <Stack.Screen key="Resolve" name='Resolve' >{(props) => <ResolveScreen {...props}/>}</Stack.Screen>
       <Stack.Screen key="ComponentsScreen" name='ComponentsScreen' component={ComponentsScreen} />
