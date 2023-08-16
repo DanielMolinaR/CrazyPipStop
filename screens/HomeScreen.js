@@ -1,12 +1,17 @@
 import * as React from 'react';
 import { Text, View, Image, ImageBackground, Pressable } from 'react-native';
+
+var _ = require('lodash');
+
+// Components
 import CpsButtonBig from '../components/CpsButtonBig';
 
-import Logo from "../assets/cps-logo.png"
-import Background from "../assets/red-background-9-16.png"
-import Pattern from "../assets/gray-pattern.png"
+// Images
+import Logo from "../assets/images/cps-logo.png"
+import Background from "../assets/images/red-background-9-16.png"
+import Pattern from "../assets/images/gray-pattern.png"
 
-var familyMode = {
+const familyMode = {
     name: "FAMILY",
     secondsCounter: 40,
     audiosPath: ["PIT_40_MASTER.mp3"],
@@ -15,7 +20,7 @@ var familyMode = {
     hasPenalization: false,
 };
   
-var normalMode = {
+const normalMode = {
     name: "NORMAL",
     secondsCounter: 30,
     audiosPath: ["PIT_30_MASTER.mp3"],
@@ -24,7 +29,7 @@ var normalMode = {
     hasPenalization: false,
 };
   
-var avanzadoMode = {
+const advancedMode = {
     name: "AVANZADO",
     secondsCounter: 25,
     audiosPath: ["PIT_25_MASTER.mp3"],
@@ -36,7 +41,7 @@ var avanzadoMode = {
     penalizedAudiosPath: ["PIT_20_MASTER.mp3"]
 };
   
-var proMode = {
+const proMode = {
     name: "PRO",
     secondsCounter: 20,
     audioPath: ["PIT_20_MASTER.mp3"],
@@ -47,11 +52,16 @@ var proMode = {
     penalizationTime: 5,
     penalizedAudiosPath: []
 };
-  
-const gameModes = [familyMode, normalMode, avanzadoMode, proMode]
-
 
 export default function HomeScreen({ navigation }){
+      
+    let gameModes = [
+        familyMode, 
+        normalMode, 
+        advancedMode, 
+        proMode
+    ]
+
     return (
     <View className="w-full h-full max-h-max bg-gray-pattern">
         <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
@@ -62,7 +72,7 @@ export default function HomeScreen({ navigation }){
                 <View className="w-full h-full grid grid-cols-1 gap-y-4 items-center">
                     {gameModes.map((gameMode, index) => 
                         <Pressable key={gameMode.name} className="w-2/3 h-[12%]"
-                        onPress={() => navigation.navigate('Game', {gameMode: gameMode})}>
+                        onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                                     <Text className="text-2xl">
