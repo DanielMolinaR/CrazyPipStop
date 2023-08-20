@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 // Components
 import CpsButtonBig from '../components/CpsButtonBig';
+import StyledText from '../components/StyledText';
 
 // Images
 import Logo from "../assets/images/cps-logo.png"
@@ -75,9 +76,7 @@ export default function HomeScreen({ navigation }){
                         onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                    <Text className="text-2xl">
-                                        {gameMode.name.toUpperCase()}
-                                    </Text>
+                                    <StyledText style="text-3xl font-black" text={gameMode.name.toUpperCase()} />
                                 </View>
                             </CpsButtonBig>
                         </Pressable>

@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Text, View, Image, ImageBackground, Pressable } from 'react-native';
+
 import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
 import CpsRoundButton from '../components/CpsRoundButton';
+import StyledText from '../components/StyledText';
 
 import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-75_9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
+import black_X from "../assets/images/black-x.png"
 
 let GameMode;
 
@@ -18,9 +21,7 @@ function getVictoryPoints(MaxVictoriesPoints) {
             <View className="w-[52px] h-[52px]" key={i+1}>
                 <CpsRoundButton>
                     <View className="w-full h-full bg-cps-yellow rounded-full items-center">
-                        <Text className="text-3xl font-black">
-                            {i+1}
-                        </Text>
+                        <StyledText style="text-3xl font-black" text={i+1} />
                     </View>
                 </CpsRoundButton>
             </View>
@@ -38,9 +39,7 @@ function getMistakePoints() {
             <View className="w-[18%] h-[40%]">
                 <CpsButtonSmall>
                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                        <Text className="text-2xl font-black">
-                            X
-                        </Text>
+                        <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
                     </View>
                 </CpsButtonSmall>
             </View>
@@ -52,7 +51,7 @@ function getMistakePoints() {
 
 function getPenalizationButton(isPenalized, setIsPenalized) {
     let penalizationButton = (
-        <View className="w-[26%] h-[35%]">
+        <View className="w-[26%]">
         </View>
     );
     if (GameMode.hasPenalization) {
@@ -65,13 +64,11 @@ function getPenalizationButton(isPenalized, setIsPenalized) {
         }
 
         penalizationButton = (
-            <Pressable key={"penalization"} className="w-[24%] h-[32%] z-10"
+            <Pressable key={"penalization"} className="w-[24%] z-10"
             onPress={() => setIsPenalized(!isPenalized)}>
                 <CpsButtonBig>
-                    <View className={`w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
-                        <Text className={`text-4xl ${textStyle} font-black`}>
-                            -5"
-                        </Text>
+                    <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
+                        <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
                     </View>
                 </CpsButtonBig>
             </Pressable>
@@ -92,12 +89,13 @@ function getMainTimer(isPenalized) {
     }
 
     return (
-        <View className="w-2/4 h-[40%] -mt-5 z-0">
+        <View className="w-2/4 -mt-5 z-0">
            <CpsButtonBig>
               <View className={`flex w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
-                <Text className={`text-6xl ${textStyle} font-black`}>
-                  {GameMode.secondsCounter}"
-                </Text>
+                <StyledText 
+                    style={`text-6xl ${textStyle} font-black`} 
+                    text={`${GameMode.secondsCounter}"`} 
+                />
               </View>
           </CpsButtonBig>
         </View>
@@ -106,18 +104,19 @@ function getMainTimer(isPenalized) {
 
 function getPenalizedTime(isPenalized) {
     let penalizationTimeContainer = penalizationTimeContainer = (
-        <View className="w-[26%] h-[35%]">
+        <View className="w-[26%]">
         </View>
     );
 
     if (isPenalized) {
         penalizationTimeContainer = (
-            <View className="w-[26%] h-[28%] z-10 -mt-4">
+            <View className="w-[26%] z-10 -mt-4">
                 <CpsButtonBig>
                     <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                        <Text className="text-3xl font-black text-cps-yellow">
-                            {GameMode.secondsCounter - GameMode.penalizationTime}"
-                        </Text>
+                        <StyledText 
+                            style="text-3xl font-black text-cps-yellow"
+                            text={`${GameMode.secondsCounter - GameMode.penalizationTime}"`}
+                        />
                     </View>
                 </CpsButtonBig>
             </View>
@@ -165,24 +164,28 @@ export default function GameScreen({ route, navigation }){
                 <ImageBackground className="w-full h-full" source={Background}>
                 </ImageBackground>
             </View>
-            <View className="w-full h-full absolute">
-                <View className="w-full h-[73%]">
+            <View className="flex w-full h-full absolute">
+                <View className="flex gap-y-1 w-full h-[73%]">
                     <View className="w-full h-1/6 items-center">
                         <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                     </View>
-                    <View className="flex w-full h-3/6 items-center">
-                        {penalizationButton}
-                        {mainTimer}
-                        {penalizedTime}
+                    <View className="flex w-full h-3/6">
+                        <View className="w-full h-[35%] items-center justify-center">
+                            {penalizationButton}
+                        </View>
+                        <View className="w-full h-[40%] items-center justify-center">
+                            {mainTimer}
+                        </View>
+                        <View className="w-full h-[25%] items-center justify-center">
+                            {penalizedTime}
+                        </View>
                     </View>
-                    <View className="flex w-full h-[36%] items-center">
-                        <Pressable key={"penalization"} className="w-2/4 h-[84%] z-10 -mt-4"
+                    <View className="flex w-full h-2/6 items-center">
+                        <Pressable key={"penalization"} className="w-2/4 h-5/6 z-10"
                             onPress={() => navigation.navigate('Resolve', {gameMode: GameMode})}>
                             <CpsButtonBig>
-                                <View className="w-full h-full bg-cps-green rounded-md items-center justify-center">
-                                    <Text className="text-7xl font-black text-white">
-                                        GO
-                                    </Text>
+                                <View className="w-full h-full bg-cps-green rounded-md justify-center">
+                                    <StyledText style="text-center text-7xl font-black text-white" text={"GO"} />
                                 </View>
                             </CpsButtonBig>
                         </Pressable>
