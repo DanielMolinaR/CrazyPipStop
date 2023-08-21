@@ -133,11 +133,11 @@ function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) 
 }
 
 
-function getMainTimer(isPenalized) {
+function getMainTimer(isPenalized, isPenalizationUsed) {
     let backgroundStyle = "bg-cps-brown";
     let textStyle = "text-cps-yellow"
 
-    if (isPenalized) {
+    if (isPenalized && !isPenalizationUsed) {
         backgroundStyle = "bg-cps-deep-red"
         textStyle = "text-cps-red"
     }
@@ -156,13 +156,13 @@ function getMainTimer(isPenalized) {
     )
 }
 
-function getPenalizedTime(isPenalized) {
+function getPenalizedTime(isPenalized, isPenalizationUsed) {
     let penalizationTimeContainer = penalizationTimeContainer = (
         <View className="w-[26%]">
         </View>
     );
 
-    if (isPenalized) {
+    if (isPenalized && !isPenalizationUsed) {
         penalizationTimeContainer = (
             <View className="w-[26%] z-10 -mt-4">
                 <CpsButtonBig>
@@ -194,8 +194,8 @@ export default function GameScreen({ route, navigation }){
     const [isPenalizationUsed, setIsPenalizationUsed] = React.useState(false);
 
     let penalizationButton = getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed);
-    let mainTimer = getMainTimer(isPenalized);
-    let penalizedTime = getPenalizedTime(isPenalized);
+    let mainTimer = getMainTimer(isPenalized, isPenalizationUsed);
+    let penalizedTime = getPenalizedTime(isPenalized, isPenalizationUsed);
 
     React.useEffect(() => {
         penalizationButton = getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed);
@@ -203,8 +203,8 @@ export default function GameScreen({ route, navigation }){
 
     React.useEffect(() => {
         penalizationButton = getPenalizationButton(isPenalized, setIsPenalized);
-        mainTimer = getMainTimer(isPenalized);
-        penalizedTime = getPenalizedTime(isPenalized);
+        mainTimer = getMainTimer(isPenalized, isPenalizationUsed);
+        penalizedTime = getPenalizedTime(isPenalized, isPenalizationUsed);
         GameMode.isPenalized = isPenalized
     }, [isPenalized])
 
