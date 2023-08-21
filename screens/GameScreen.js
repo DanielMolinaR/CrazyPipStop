@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, ImageBackground, Pressable } from 'react-native';
 
 import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
@@ -10,22 +10,41 @@ import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-75_9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
 import black_X from "../assets/images/black-x.png"
+import white_X from "../assets/images/white-x.png"
 
 let GameMode;
+
+function handlingResults() {
+    // TODO: Handle results and finish if the user has won or lost
+    console.log("Handling")
+}
 
 function getVictoryPoints(MaxVictoriesPoints) {
     var victoryPoints = [];
     MaxVictoriesPoints = GameMode.maxVictoryPoints;
+    let actualVictoryPoints = GameMode.victoryPoints
     for (var i=0; i < MaxVictoriesPoints; i++) {
-        var victoryPoint = (
-            <View className="w-[52px] h-[52px]" key={i+1}>
-                <CpsRoundButton>
-                    <View className="w-full h-full bg-cps-yellow rounded-full items-center">
-                        <StyledText style="text-3xl font-black" text={i+1} />
-                    </View>
-                </CpsRoundButton>
-            </View>
-        )
+        if (actualVictoryPoints <= i){
+            var victoryPoint = (
+                <View className="w-[52px] h-[52px]" key={i+1}>
+                    <CpsRoundButton>
+                        <View className="w-full h-full bg-cps-yellow rounded-full items-center">
+                            <StyledText style="text-3xl font-black" text={i+1} />
+                        </View>
+                    </CpsRoundButton>
+                </View>
+            )
+        } else {
+            var victoryPoint = (
+                <View className="w-[52px] h-[52px]" key={i+1}>
+                    <CpsRoundButton>
+                        <View className="w-full h-full bg-cps-green rounded-full items-center">
+                            <StyledText style="text-3xl font-black text-white" text={i+1} />
+                        </View>
+                    </CpsRoundButton>
+                </View>
+            )
+        }
         victoryPoints.push(victoryPoint);
     }
     return victoryPoints;
@@ -34,22 +53,45 @@ function getVictoryPoints(MaxVictoriesPoints) {
 function getMistakePoints() {
     var mistakePoints = [];
     let MaxMistakesPoints = GameMode.maxLosePoints;
+    let actualLosingPoints = GameMode.losingPoints
     for (var i=0; i < MaxMistakesPoints; i++) {
-        var mistakePoint = (
-            <View className="w-[18%] h-[40%]">
-                <CpsButtonSmall>
-                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                        <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
-                    </View>
-                </CpsButtonSmall>
-            </View>
-        )
+        if (actualLosingPoints < i) {
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        } else if (actualLosingPoints == i ){
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-orange rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        } else {
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-red rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        }
         mistakePoints.push(mistakePoint);
     }
     return mistakePoints;
 }
 
-function getPenalizationButton(isPenalized, setIsPenalized) {
+function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) {
     let penalizationButton = (
         <View className="w-[26%]">
         </View>
@@ -63,16 +105,28 @@ function getPenalizationButton(isPenalized, setIsPenalized) {
             textStyle = "text-white"
         }
 
-        penalizationButton = (
-            <Pressable key={"penalization"} className="w-[24%] z-10"
-            onPress={() => setIsPenalized(!isPenalized)}>
-                <CpsButtonBig>
-                    <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
-                        <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
-                    </View>
-                </CpsButtonBig>
-            </Pressable>
-        )
+        if (isPenalizationUsed) {
+            penalizationButton = (
+                <View className="w-[24%] z-10 opacity-25">
+                    <CpsButtonBig>
+                        <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
+                            <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                        </View>
+                    </CpsButtonBig>
+                </View>
+            )
+        } else {
+            penalizationButton = (
+                <Pressable key={"penalization"} className="w-[24%] z-10"
+                onPress={() => setIsPenalized(!isPenalized)}>
+                    <CpsButtonBig>
+                        <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
+                            <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                        </View>
+                    </CpsButtonBig>
+                </Pressable>
+            )
+        }
     }
 
     return penalizationButton
@@ -130,18 +184,22 @@ export default function GameScreen({ route, navigation }){
 
     GameMode = route.params.gameMode;
 
+    handlingResults()
+
     let victoryPoints = getVictoryPoints();
     let mistakePoints = getMistakePoints();
 
     const [isPenalized, setIsPenalized] = React.useState(GameMode.isPenalized);
 
-    let penalizationButton = getPenalizationButton(isPenalized, setIsPenalized);
+    const [isPenalizationUsed, setIsPenalizationUsed] = React.useState(false);
+
+    let penalizationButton = getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed);
     let mainTimer = getMainTimer(isPenalized);
     let penalizedTime = getPenalizedTime(isPenalized);
 
     React.useEffect(() => {
-        penalizationButton = getPenalizationButton(isPenalized, setIsPenalized);
-    }, [GameMode.hasPenalization])
+        penalizationButton = getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed);
+    }, [isPenalizationUsed])
 
     React.useEffect(() => {
         penalizationButton = getPenalizationButton(isPenalized, setIsPenalized);
@@ -182,7 +240,7 @@ export default function GameScreen({ route, navigation }){
                     </View>
                     <View className="flex w-full h-2/6 items-center">
                         <Pressable key={"penalization"} className="w-2/4 h-5/6 z-10"
-                            onPress={() => navigation.navigate('Resolve', {gameMode: GameMode})}>
+                            onPress={() => navigation.navigate('Resolve', {gameMode: GameMode, setIsPenalizationUsed: setIsPenalizationUsed})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-green rounded-md justify-center">
                                     <StyledText style="text-center text-7xl font-black text-white" text={"GO"} />

@@ -1,12 +1,18 @@
 import * as React from 'react';
-import { Text, View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, ImageBackground, Pressable } from 'react-native';
+
 import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
 import CpsRoundButton from '../components/CpsRoundButton';
+import StyledText from '../components/StyledText';
 
 import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-33_9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
+import black_X from "../assets/images/black-x.png"
+
+let GameMode;
+let SetIsPenalizationUsed 
 
 function getVictoryPoints(MaxVictoriesPoints) {
     var victoryPoints = [];
@@ -15,9 +21,7 @@ function getVictoryPoints(MaxVictoriesPoints) {
             <View className="w-[52px] h-[52px]" key={i+1}>
                 <CpsRoundButton>
                     <View className="w-full h-full bg-cps-yellow rounded-full items-center">
-                        <Text className="text-3xl font-black">
-                            {i+1}
-                        </Text>
+                        <StyledText style="text-3xl font-black" text={i+1} />
                     </View>
                 </CpsRoundButton>
             </View>
@@ -34,9 +38,7 @@ function getMistakePoints(MaxMistakesPoints) {
             <View className="w-[18%] h-[40%]">
                 <CpsButtonSmall>
                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                        <Text className="text-2xl font-black">
-                            X
-                        </Text>
+                        <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
                     </View>
                 </CpsButtonSmall>
             </View>
@@ -46,30 +48,53 @@ function getMistakePoints(MaxMistakesPoints) {
     return mistakePoints;
 }
 
-export default function ResolveScreen({ route }){
+function addResult(userWon, navigation) {
+    if (GameMode.isPenalized){
+        GameMode.isPenalized = false
+        SetIsPenalizationUsed(true)
+    }
 
-    let gameMode = route.params.gameMode;
+    if (userWon) {
+        GameMode.victoryPoints += 1
+    } else {
+        GameMode.losingPoints += 1
+    }
+    // TODO: Check how the gamemode state can be updated without this navigatorç
+    // currently works but it doesn't while using back navigation arrow
+    navigation.navigate('Game', {gameMode: GameMode})
+}
 
-    let victoryPoints = getVictoryPoints(gameMode.maxVictoryPoints);
-    let mistakePoints = getMistakePoints(gameMode.maxLosePoints);
+function askForResult(navigation) {
+    // TODO: Add question if the user has won
+
+    addResult(false, navigation)
+}
+
+export default function ResolveScreen({ route, navigation }){
+
+    GameMode = route.params.gameMode;
+
+    SetIsPenalizationUsed = route.params.setIsPenalizationUsed;
+
+    let victoryPoints = getVictoryPoints(GameMode.maxVictoryPoints);
+    let mistakePoints = getMistakePoints(GameMode.maxLosePoints);
 
     var wrap;
-    if (gameMode.maxLosePoints < 5) {
+    if (GameMode.maxLosePoints < 5) {
         wrap = "";
     } else {
         wrap = "flex-wrap";
     }
 
-    let [timer, setTimer] = React.useState(0);
+    let time = GameMode.secondsCounter;
 
-    let time = gameMode.secondsCounter;
-
-    if (gameMode.isPenalized) {
-        time = (gameMode.secondsCounter - gameMode.penalizationTime)
+    if (GameMode.isPenalized) {
+        time = (GameMode.secondsCounter - GameMode.penalizationTime)
     }
 
+    let [timer, setTimer] = React.useState(time);
+
     React.useEffect(() => {
-        console.log("entra")
         const counter = setTimeout(async function() {
           function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
@@ -88,8 +113,6 @@ export default function ResolveScreen({ route }){
       }
     }, [timer]);
 
-    setTimer(time)
-
     return (
     <View className="w-full h-full max-h-screen">
         <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
@@ -105,9 +128,7 @@ export default function ResolveScreen({ route }){
                         <View className="w-2/4 h-[65%] -mt-4">
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                                    <Text className="text-4xl text-cps-yellow font-black">
-                                        {time}"
-                                    </Text>
+                                    <StyledText style="text-4xl text-cps-yellow font-black" text={`${time}"`} />
                                 </View>
                             </CpsButtonBig>
                         </View>
@@ -116,20 +137,16 @@ export default function ResolveScreen({ route }){
                        <View className="w-3/4 h-[50%] z-0">
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-end">
-                                    <Text className="text-8xl text-cps-yellow font-black">
-                                        {timer}"
-                                    </Text>
+                                    <StyledText style="text-8xl text-cps-yellow font-black" text={`${timer}"`} />
                                 </View>
                             </CpsButtonBig>
                         </View>
                         <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                             <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
-                              onPress={() => navigation.navigate('Resolve', {gameMode: GameMode})}>
+                              onPress={() => askForResult(navigation)}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <Text className="text-5xl font-black">
-                                            STOP
-                                        </Text>
+                                        <StyledText style="text-5xl font-black" text="STOP" />
                                     </View>
                                 </CpsButtonBig>
                             </Pressable>
