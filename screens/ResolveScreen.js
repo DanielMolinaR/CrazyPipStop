@@ -10,39 +10,81 @@ import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-33_9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
 import black_X from "../assets/images/black-x.png"
+import white_X from "../assets/images/white-x.png"
+
+import red_X from "../assets/images/x-small-white-border.png"
+import green_tick from "../assets/images/tick-small-white-border.png"
 
 let GameMode;
 let SetIsPenalizationUsed 
 
-function getVictoryPoints(MaxVictoriesPoints) {
+function getVictoryPoints() {
     var victoryPoints = [];
-    for (var i=0; i < MaxVictoriesPoints; i++) {
-        var victoryPoint = (
-            <View className="w-[52px] h-[52px]" key={i+1}>
-                <CpsRoundButton>
-                    <View className="w-full h-full bg-cps-yellow rounded-full items-center">
-                        <StyledText style="text-3xl font-black" text={i+1} />
-                    </View>
-                </CpsRoundButton>
-            </View>
-        )
+    let maxVictoriesPoints = GameMode.maxVictoryPoints;
+    let actualVictoryPoints = GameMode.victoryPoints
+    for (var i=0; i < maxVictoriesPoints; i++) {
+        if (actualVictoryPoints <= i){
+            var victoryPoint = (
+                <View className="w-[52px] h-[52px]" key={i+1}>
+                    <CpsRoundButton>
+                        <View className="w-full h-full bg-cps-yellow rounded-full items-center">
+                            <StyledText style="text-3xl font-black" text={i+1} />
+                        </View>
+                    </CpsRoundButton>
+                </View>
+            )
+        } else {
+            var victoryPoint = (
+                <View className="w-[52px] h-[52px]" key={i+1}>
+                    <CpsRoundButton>
+                        <View className="w-full h-full bg-cps-green rounded-full items-center">
+                            <StyledText style="text-3xl font-black text-white" text={i+1} />
+                        </View>
+                    </CpsRoundButton>
+                </View>
+            )
+        }
         victoryPoints.push(victoryPoint);
     }
     return victoryPoints;
 }
 
-function getMistakePoints(MaxMistakesPoints) {
+function getMistakePoints() {
     var mistakePoints = [];
-    for (var i=0; i < MaxMistakesPoints; i++) {
-        var mistakePoint = (
-            <View className="w-[18%] h-[40%]">
-                <CpsButtonSmall>
-                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                        <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
-                    </View>
-                </CpsButtonSmall>
-            </View>
-        )
+    let maxLosePoints = GameMode.maxLosePoints;
+    let actualLosingPoints = GameMode.losingPoints
+    for (var i=0; i < maxLosePoints; i++) {
+        if (actualLosingPoints < i) {
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        } else if (actualLosingPoints == i ){
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-orange rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        } else {
+            var mistakePoint = (
+                <View className="w-[18%] h-[40%]">
+                    <CpsButtonSmall>
+                        <View className="w-full h-full bg-cps-red rounded-md items-center justify-center">
+                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
+                        </View>
+                    </CpsButtonSmall>
+                </View>
+            )
+        }
         mistakePoints.push(mistakePoint);
     }
     return mistakePoints;
@@ -59,15 +101,19 @@ function addResult(userWon, navigation) {
     } else {
         GameMode.losingPoints += 1
     }
+
+    if (GameMode.victoryPoints >= GameMode.maxVictoryPoints) {
+        console.log('Has ganado')
+        navigation.navigate('Home')
+    }
+
+    if (GameMode.losingPoints >= GameMode.maxLosePoints) {
+        console.log('Has perdido')
+        navigation.navigate('Home')
+    }
     // TODO: Check how the gamemode state can be updated without this navigatorç
     // currently works but it doesn't while using back navigation arrow
     navigation.navigate('Game', {gameMode: GameMode})
-}
-
-function askForResult(navigation) {
-    // TODO: Add question if the user has won
-
-    addResult(false, navigation)
 }
 
 export default function ResolveScreen({ route, navigation }){
@@ -76,8 +122,8 @@ export default function ResolveScreen({ route, navigation }){
 
     SetIsPenalizationUsed = route.params.setIsPenalizationUsed;
 
-    let victoryPoints = getVictoryPoints(GameMode.maxVictoryPoints);
-    let mistakePoints = getMistakePoints(GameMode.maxLosePoints);
+    let victoryPoints = getVictoryPoints();
+    let mistakePoints = getMistakePoints();
 
     var wrap;
     if (GameMode.maxLosePoints < 5) {
@@ -94,6 +140,8 @@ export default function ResolveScreen({ route, navigation }){
 
     let [timer, setTimer] = React.useState(time);
 
+    const [showAppOptions, setShowAppOptions] = React.useState(false); 
+
     React.useEffect(() => {
         const counter = setTimeout(async function() {
           function sleep(ms) {
@@ -106,6 +154,8 @@ export default function ResolveScreen({ route, navigation }){
 
           if (timer > 0) {
             setTimer(timer - 1);
+          } else {
+            setShowAppOptions(true);
           }
         }, 1000)
       return () => { // this should work flawlessly besides some milliseconds lost here and there 
@@ -143,7 +193,7 @@ export default function ResolveScreen({ route, navigation }){
                         </View>
                         <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                             <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
-                              onPress={() => askForResult(navigation)}>
+                              onPress={() => setShowAppOptions(true)}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                                         <StyledText style="text-5xl font-black" text="STOP" />
@@ -162,6 +212,42 @@ export default function ResolveScreen({ route, navigation }){
                     </View>
                 </View>
             </View>
+            {showAppOptions ? (
+                <View className="w-full h-full absolute z-20">
+                    <View className="w-full h-full bg-cps-gray opacity-75"></View>
+                    <View className="w-full h-full absolute">
+                        <View className="w-full h-1/2 items-center justify-center">
+                            <View className="w-3/4 h-1/2">
+                                <CpsButtonBig>
+                                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                                        <StyledText style="text-5xl text-center font-black" text="¿HABEIS GANADO?" />
+                                    </View>
+                                </CpsButtonBig>
+                            </View>
+                        </View>
+                        <View className="w-full h-1/2 items-center justify-center flex flex-row">
+                            <View className="w-2/5 h-full items-start">
+                                <Pressable key={"penalization"} className="w-4/5 h-1/3"
+                                    onPress={() => addResult(false, navigation)}>
+                                        <View className="h-full rounded-md items-center justify-center">
+                                            <Image className="w-5/6" source={red_X} resizeMode="contain"/>
+                                        </View>
+                                </Pressable>
+                            </View>
+                            <View className="w-2/5 h-full items-end">
+                                <Pressable key={"penalization"} className="w-4/5 h-1/3"
+                                    onPress={() => addResult(true, navigation)}>
+                                        <View className="h-full rounded-md items-center justify-center">
+                                            <Image className="w-5/6" source={green_tick} resizeMode="contain"/>
+                                        </View>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            ) : (
+                <View />
+            )}
         </ImageBackground>
     </View>
     )

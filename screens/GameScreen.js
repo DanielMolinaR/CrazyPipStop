@@ -14,16 +14,11 @@ import white_X from "../assets/images/white-x.png"
 
 let GameMode;
 
-function handlingResults() {
-    // TODO: Handle results and finish if the user has won or lost
-    console.log("Handling")
-}
-
-function getVictoryPoints(MaxVictoriesPoints) {
+function getVictoryPoints() {
     var victoryPoints = [];
-    MaxVictoriesPoints = GameMode.maxVictoryPoints;
+    let maxVictoriesPoints = GameMode.maxVictoryPoints;
     let actualVictoryPoints = GameMode.victoryPoints
-    for (var i=0; i < MaxVictoriesPoints; i++) {
+    for (var i=0; i < maxVictoriesPoints; i++) {
         if (actualVictoryPoints <= i){
             var victoryPoint = (
                 <View className="w-[52px] h-[52px]" key={i+1}>
@@ -52,9 +47,9 @@ function getVictoryPoints(MaxVictoriesPoints) {
 
 function getMistakePoints() {
     var mistakePoints = [];
-    let MaxMistakesPoints = GameMode.maxLosePoints;
+    let maxLosePoints = GameMode.maxLosePoints;
     let actualLosingPoints = GameMode.losingPoints
-    for (var i=0; i < MaxMistakesPoints; i++) {
+    for (var i=0; i < maxLosePoints; i++) {
         if (actualLosingPoints < i) {
             var mistakePoint = (
                 <View className="w-[18%] h-[40%]">
@@ -183,8 +178,6 @@ function getPenalizedTime(isPenalized, isPenalizationUsed) {
 export default function GameScreen({ route, navigation }){
 
     GameMode = route.params.gameMode;
-
-    handlingResults()
 
     let victoryPoints = getVictoryPoints();
     let mistakePoints = getMistakePoints();
