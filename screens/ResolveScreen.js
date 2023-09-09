@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { View, Image, ImageBackground, Pressable } from 'react-native';
+import { Audio } from 'expo-av';
 
 import CpsButtonBig from '../components/CpsButtonBig';
 import CpsButtonSmall from '../components/CpsButtonSmall';
 import CpsRoundButton from '../components/CpsRoundButton';
 import StyledText from '../components/StyledText';
+import CountDown from '../components/CountDown'
 
 import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-33_9-16.png"
@@ -102,24 +104,19 @@ function addResult(userWon, navigation) {
         GameMode.losingPoints += 1
     }
 
-    if (GameMode.victoryPoints >= GameMode.maxVictoryPoints) {
-        console.log('Has ganado')
+    if (GameMode.victoryPoints >= GameMode.maxVictoryPoints || GameMode.losingPoints >= GameMode.maxLosePoints) {
+        console.log('Has terminado')
         navigation.navigate('Home')
-    }
-
-    if (GameMode.losingPoints >= GameMode.maxLosePoints) {
-        console.log('Has perdido')
-        navigation.navigate('Home')
+    } else {
+        navigation.navigate('Game', {gameMode: GameMode})
     }
     // TODO: Check how the gamemode state can be updated without this navigatorç
     // currently works but it doesn't while using back navigation arrow
-    navigation.navigate('Game', {gameMode: GameMode})
 }
 
 export default function ResolveScreen({ route, navigation }){
 
     GameMode = route.params.gameMode;
-
     SetIsPenalizationUsed = route.params.setIsPenalizationUsed;
 
     let victoryPoints = getVictoryPoints();
@@ -138,30 +135,82 @@ export default function ResolveScreen({ route, navigation }){
         time = (GameMode.secondsCounter - GameMode.penalizationTime)
     }
 
-    let [timer, setTimer] = React.useState(time);
-
-    const [showAppOptions, setShowAppOptions] = React.useState(false); 
-
+    const [Loaded, SetLoaded] = React.useState(false);
+    const [Loading, SetLoading] = React.useState(false);
+    const sound = React.useRef(new Audio.Sound());
+  
     React.useEffect(() => {
-        const counter = setTimeout(async function() {
-          function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
+        return sound
+          ? () => {
+              PauseAudio();
+            }
+          : undefined;
+      }, [sound]);
+  
+    const PlayAudio = async () => {
+      await LoadAudio();    
+      try {
+        const result = await sound.current.getStatusAsync();
+        if (result.isLoaded) {
+          if (result.isPlaying === false) {
+            sound.Vol
+            sound.current.playAsync();
           }
-
-          if(time == timer){
-            await sleep(5000)
+        }
+      } catch (error) {}
+    };
+  
+    const PauseAudio = async () => {
+      try {
+        const result = await sound.current.getStatusAsync();
+        if (result.isLoaded) {
+          if (result.isPlaying === true) {
+            sound.current.unloadAsync();
           }
-
-          if (timer > 0) {
-            setTimer(timer - 1);
+        }
+      } catch (error) {}
+    };
+  
+    const LoadAudio = async () => {
+      SetLoading(true);
+      const checkLoading = await sound.current.getStatusAsync();
+      if (checkLoading.isLoaded === false) {
+        try {
+          let result = new Audio.Sound()
+          if (GameMode.isPenalized) {
+            result = await sound.current.loadAsync(GameMode.penalizedAudios[0], {}, true);
           } else {
-            setShowAppOptions(true);
+            result = await sound.current.loadAsync(GameMode.audios[0], {}, true);
           }
-        }, 1000)
-      return () => { // this should work flawlessly besides some milliseconds lost here and there 
-        clearTimeout(counter)
+          if (result.isLoaded === false) {
+            SetLoading(false);
+            console.log('Error in Loading Audio');
+          } else {
+            SetLoading(false);
+            SetLoaded(true);
+          }
+        } catch (error) {
+          console.log(error);
+          SetLoading(false);
+        }
+      } else {
+        SetLoading(false);
       }
-    }, [timer]);
+    };
+
+    const [showAppOptions, setShowAppOptions] = React.useState(false);
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function showOptionsAndHandleAudio(hasFinished) {
+        if (hasFinished) {
+            await sleep(2000)
+        }
+        setShowAppOptions(true)
+        PauseAudio();
+    }
 
     return (
     <View className="w-full h-full max-h-screen">
@@ -184,16 +233,18 @@ export default function ResolveScreen({ route, navigation }){
                         </View>
                     </View>
                     <View className="flex w-full h-[55%] items-center">
-                       <View className="w-3/4 h-[50%] z-0">
-                            <CpsButtonBig>
-                                <View className="w-full h-full bg-cps-brown rounded-md items-center justify-end">
-                                    <StyledText style="text-8xl text-cps-yellow font-black" text={`${timer}"`} />
-                                </View>
-                            </CpsButtonBig>
-                        </View>
+
+                        <CountDown 
+                            style={"w-3/4 h-[50%] z-0"} 
+                            until={time} 
+                            onFinish={showOptionsAndHandleAudio} 
+                            running={true} 
+                            onSound={PlayAudio}
+                        />
+                        
                         <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                             <Pressable key={"penalization"} className="w-2/4 h-[90%] z-10"
-                              onPress={() => setShowAppOptions(true)}>
+                              onPress={() => showOptionsAndHandleAudio(false)}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                                         <StyledText style="text-5xl font-black" text="STOP" />

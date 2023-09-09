@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Text, View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, ImageBackground, Pressable } from 'react-native';
+import { Audio } from 'expo-av';
 
 var _ = require('lodash');
 
@@ -12,10 +13,16 @@ import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
 
+const track40 = require('../assets/music/PIT_40_MASTER.mp3')
+const track30 = require('../assets/music/PIT_30_MASTER.mp3')
+const track25 = require('../assets/music/PIT_25_MASTER.mp3')
+const track20 = require('../assets/music/PIT_20_MASTER.mp3')
+const track15 = require('../assets/music/PIT_15_MASTER.mp3')
+
 const familyMode = {
     name: "FAMILY",
     secondsCounter: 40,
-    audiosPath: ["PIT_40_MASTER.mp3"],
+    audios: [track40],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -26,7 +33,7 @@ const familyMode = {
 const normalMode = {
     name: "NORMAL",
     secondsCounter: 30,
-    audiosPath: ["PIT_30_MASTER.mp3"],
+    audios: [track30],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -37,7 +44,7 @@ const normalMode = {
 const advancedMode = {
     name: "AVANZADO",
     secondsCounter: 25,
-    audiosPath: ["PIT_25_MASTER.mp3"],
+    audios: [track25],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -45,13 +52,13 @@ const advancedMode = {
     hasPenalization: true,
     isPenalized: false,
     penalizationTime: 5,
-    penalizedAudiosPath: ["PIT_20_MASTER.mp3"]
+    penalizedAudios: [track20]
 };
   
 const proMode = {
     name: "PRO",
     secondsCounter: 20,
-    audioPath: ["PIT_20_MASTER.mp3"],
+    audios: [track20],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -59,11 +66,22 @@ const proMode = {
     hasPenalization: true,
     isPenalized: false,
     penalizationTime: 5,
-    penalizedAudiosPath: []
+    penalizedAudios: [track15]
 };
 
 export default function HomeScreen({ navigation }){
-      
+
+    async function loadAudios() {
+        familyMode.audios[0] = await Audio.Sound.createAsync(audio40)
+        normalMode.audios[0] = await Audio.Sound.createAsync(audio30)
+        advancedMode.audios[0] = await Audio.Sound.createAsync(audio25)
+        advancedMode.penalizedAudios[0] = await Audio.Sound.createAsync(audio20)
+        proMode.audios[0] = await Audio.Sound.createAsync(audio20)
+        proMode.penalizedAudios[0] = await Audio.Sound.createAsync(audio15)
+    }
+
+    // loadAudios()
+
     let gameModes = [
         familyMode, 
         normalMode, 
