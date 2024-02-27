@@ -56,22 +56,12 @@ function getMistakePoints() {
     let maxLosePoints = GameMode.maxLosePoints;
     let actualLosingPoints = GameMode.losingPoints
     for (var i=0; i < maxLosePoints; i++) {
-        if (actualLosingPoints < i) {
+        if (actualLosingPoints <= i) {
             var mistakePoint = (
                 <View className="w-[18%] h-[40%]">
                     <CpsButtonSmall>
                         <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                             <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
-                        </View>
-                    </CpsButtonSmall>
-                </View>
-            )
-        } else if (actualLosingPoints == i ){
-            var mistakePoint = (
-                <View className="w-[18%] h-[40%]">
-                    <CpsButtonSmall>
-                        <View className="w-full h-full bg-cps-orange rounded-md items-center justify-center">
-                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
                         </View>
                     </CpsButtonSmall>
                 </View>
@@ -104,13 +94,21 @@ function addResult(userWon, navigation) {
         GameMode.losingPoints += 1
     }
 
+    navigate(navigation)
+}
+
+function navigate(navigation) {
     if (GameMode.victoryPoints >= GameMode.maxVictoryPoints || GameMode.losingPoints >= GameMode.maxLosePoints) {
-        console.log('Has terminado')
-        navigation.navigate('Home')
+        if (GameMode.victoryPoints >= GameMode.maxVictoryPoints) {
+            userWon = true
+        } else {
+            userWon = false
+        }
+        navigation.navigate('Final',  {userHasWon: userWon})
     } else {
         navigation.navigate('Game', {gameMode: GameMode})
     }
-    // TODO: Check how the gamemode state can be updated without this navigatorç
+    // TODO: Check how the gamemode state can be updated without this navigator
     // currently works but it doesn't while using back navigation arrow
 }
 
@@ -135,6 +133,7 @@ export default function ResolveScreen({ route, navigation }){
         time = (GameMode.secondsCounter - GameMode.penalizationTime)
     }
 
+    // might not be necessary
     const [Loaded, SetLoaded] = React.useState(false);
     const [Loading, SetLoading] = React.useState(false);
     const sound = React.useRef(new Audio.Sound());
@@ -263,7 +262,7 @@ export default function ResolveScreen({ route, navigation }){
                     </View>
                 </View>
             </View>
-            {showAppOptions ? (
+            {showAppOptions && (
                 <View className="w-full h-full absolute z-20">
                     <View className="w-full h-full bg-cps-gray opacity-75"></View>
                     <View className="w-full h-full absolute">
@@ -296,8 +295,6 @@ export default function ResolveScreen({ route, navigation }){
                         </View>
                     </View>
                 </View>
-            ) : (
-                <View />
             )}
         </ImageBackground>
     </View>

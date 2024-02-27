@@ -70,7 +70,7 @@ const proMode = {
 };
 
 export default function HomeScreen({ navigation }){
-
+    
     async function loadAudios() {
         familyMode.audios[0] = await Audio.Sound.createAsync(audio40)
         normalMode.audios[0] = await Audio.Sound.createAsync(audio30)

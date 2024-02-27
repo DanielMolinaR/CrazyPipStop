@@ -50,22 +50,12 @@ function getMistakePoints() {
     let maxLosePoints = GameMode.maxLosePoints;
     let actualLosingPoints = GameMode.losingPoints
     for (var i=0; i < maxLosePoints; i++) {
-        if (actualLosingPoints < i) {
+        if (actualLosingPoints <= i) {
             var mistakePoint = (
                 <View className="w-[18%] h-[40%]">
                     <CpsButtonSmall>
                         <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                             <Image className="w-full h-full" source={black_X} resizeMode="contain"/>
-                        </View>
-                    </CpsButtonSmall>
-                </View>
-            )
-        } else if (actualLosingPoints == i ){
-            var mistakePoint = (
-                <View className="w-[18%] h-[40%]">
-                    <CpsButtonSmall>
-                        <View className="w-full h-full bg-cps-orange rounded-md items-center justify-center">
-                            <Image className="w-full h-full" source={white_X} resizeMode="contain"/>
                         </View>
                     </CpsButtonSmall>
                 </View>

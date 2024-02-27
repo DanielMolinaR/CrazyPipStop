@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": ">= 3.8.1"
+    "version": ">= 3.8.1" 
   },
   "build": {
     "development": {
@@ -16,11 +16,16 @@
       }
     },
     "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+/*    "preview": {
       "distribution": "internal",
       "ios": {
         "resourceClass": "m-medium"
       }
-    },
+    },*/
     "production": {
       "ios": {
         "resourceClass": "m-medium"
