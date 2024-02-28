@@ -104,7 +104,7 @@ function navigate(navigation) {
         } else {
             userWon = false
         }
-        navigation.navigate('Final',  {userHasWon: userWon})
+        navigation.navigate('Final',  {userHasWon: userWon, gameMode: GameMode})
     } else {
         navigation.navigate('Game', {gameMode: GameMode})
     }

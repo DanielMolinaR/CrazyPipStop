@@ -13,16 +13,22 @@ import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
 
-const track40 = require('../assets/music/PIT_40_MASTER.mp3')
-const track30 = require('../assets/music/PIT_30_MASTER.mp3')
-const track25 = require('../assets/music/PIT_25_MASTER.mp3')
-const track20 = require('../assets/music/PIT_20_MASTER.mp3')
-const track15 = require('../assets/music/PIT_15_MASTER.mp3')
+const track40 = require('../assets/music/countdowns/PIT_40_MASTER.mp3')
+const track30 = require('../assets/music/countdowns/PIT_30_MASTER.mp3')
+const track25 = require('../assets/music/countdowns/PIT_25_MASTER.mp3')
+const track20 = require('../assets/music/countdowns/PIT_20_MASTER.mp3')
+const track15 = require('../assets/music/countdowns/PIT_15_MASTER.mp3')
+const ovation = require('../assets/music/victory/OVATION.mp3')
+const victoryPro = require('../assets/music/victory/FINAL_PRO.mp3')
+const brokenCar = require('../assets/music/defeat/BROKEN_CAR.mp3')
+const defeat = require('../assets/music/defeat/DEFEAT.wav')
 
 const familyMode = {
     name: "FAMILY",
     secondsCounter: 40,
     audios: [track40],
+    victoryAudios: [ovation],
+    defeatAudios: [defeat],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -34,6 +40,8 @@ const normalMode = {
     name: "NORMAL",
     secondsCounter: 30,
     audios: [track30],
+    victoryAudios: [ovation],
+    defeatAudios: [defeat],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -45,6 +53,8 @@ const advancedMode = {
     name: "AVANZADO",
     secondsCounter: 25,
     audios: [track25],
+    victoryAudios: [ovation],
+    defeatAudios: [defeat],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -59,6 +69,8 @@ const proMode = {
     name: "PRO",
     secondsCounter: 20,
     audios: [track20],
+    victoryAudios: [victoryPro],
+    defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
