@@ -23,10 +23,10 @@ async function navigate(navigation) {
 const FinalScreen = ({ route, navigation }) => {
 
     const styles = StyleSheet.create({
-        transformOriginView: {
-          transformOrigin: 'left',
-        },
-      });
+      transformOriginView: {
+        transformOrigin: '16%',
+      },
+    });
 
     GameMode = route.params.gameMode;
     UserHasWon = route.params.userHasWon;
@@ -90,15 +90,11 @@ const FinalScreen = ({ route, navigation }) => {
     }
 
     const LoadAudio = async () => {
-      try {
-          if (UserHasWon) {
-            await sound.current.loadAsync(GameMode.victoryAudios[0], {}, true);
-          } else {
-            const randomNumber =  Math.floor(Math.random() * (GameMode.defeatAudios.length - 0)); 
-            await sound.current.loadAsync(GameMode.defeatAudios[randomNumber], {}, true);
-          }
-      } catch (error) {
-        console.log(error);
+      if (UserHasWon) {
+        await sound.current.loadAsync(GameMode.victoryAudios[0], {}, true);
+      } else {
+        const randomNumber =  Math.floor(Math.random() * (GameMode.defeatAudios.length - 0)); 
+        await sound.current.loadAsync(GameMode.defeatAudios[randomNumber], {}, true);
       }
     };
     
@@ -114,8 +110,7 @@ const FinalScreen = ({ route, navigation }) => {
                         {
                         transform: [{rotate: spin}],
                         },
-                    ]}
-                    className="w-[78%] justify-center">
+                    ]}>
                     <CpsButtonBig >
                         <View className="w-full bg-cps-yellow">
                             <View className="w-full basis-[15%] flex-row items-center justify-center">

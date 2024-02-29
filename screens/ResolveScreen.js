@@ -133,68 +133,30 @@ export default function ResolveScreen({ route, navigation }){
         time = (GameMode.secondsCounter - GameMode.penalizationTime)
     }
 
-    // might not be necessary
-    const [Loaded, SetLoaded] = React.useState(false);
-    const [Loading, SetLoading] = React.useState(false);
     const sound = React.useRef(new Audio.Sound());
   
     React.useEffect(() => {
-        return sound
-          ? () => {
-              PauseAudio();
-            }
-          : undefined;
-      }, [sound]);
-  
-    const PlayAudio = async () => {
-      await LoadAudio();    
-      try {
-        const result = await sound.current.getStatusAsync();
-        if (result.isLoaded) {
-          if (result.isPlaying === false) {
-            sound.Vol
-            sound.current.playAsync();
-          }
+      const playbackStatus  = async (playbackStatus ) => {
+        if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+          sound.current.unloadAsync();
         }
-      } catch (error) {}
-    };
-  
-    const PauseAudio = async () => {
-      try {
-        const result = await sound.current.getStatusAsync();
-        if (result.isLoaded) {
-          if (result.isPlaying === true) {
-            sound.current.unloadAsync();
-          }
-        }
-      } catch (error) {}
-    };
+      }
+      sound.current.setOnPlaybackStatusUpdate(playbackStatus);
+    }, []);
+
+    const play = () => {
+      (async () => {
+        await LoadAudio()
+        sound.current.playAsync();
+      })();  
+    }
   
     const LoadAudio = async () => {
-      SetLoading(true);
-      const checkLoading = await sound.current.getStatusAsync();
-      if (checkLoading.isLoaded === false) {
-        try {
-          let result = new Audio.Sound()
-          if (GameMode.isPenalized) {
-            result = await sound.current.loadAsync(GameMode.penalizedAudios[0], {}, true);
-          } else {
-            result = await sound.current.loadAsync(GameMode.audios[0], {}, true);
-          }
-          if (result.isLoaded === false) {
-            SetLoading(false);
-            console.log('Error in Loading Audio');
-          } else {
-            SetLoading(false);
-            SetLoaded(true);
-          }
-        } catch (error) {
-          console.log(error);
-          SetLoading(false);
+        if (GameMode.isPenalized) {
+            await sound.current.loadAsync(GameMode.penalizedAudios[0], {}, true);
+        } else {
+            await sound.current.loadAsync(GameMode.audios[0], {}, true);
         }
-      } else {
-        SetLoading(false);
-      }
     };
 
     const [showAppOptions, setShowAppOptions] = React.useState(false);
@@ -208,7 +170,7 @@ export default function ResolveScreen({ route, navigation }){
             await sleep(2000)
         }
         setShowAppOptions(true)
-        PauseAudio();
+        sound.current.unloadAsync();
     }
 
     return (
@@ -238,7 +200,7 @@ export default function ResolveScreen({ route, navigation }){
                             until={time} 
                             onFinish={showOptionsAndHandleAudio} 
                             running={true} 
-                            onSound={PlayAudio}
+                            onSound={play}
                         />
                         
                         <View className="flex w-full h-[50%] items-center -mt-4 z-10">
