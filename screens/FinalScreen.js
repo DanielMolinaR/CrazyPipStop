@@ -33,13 +33,6 @@ const FinalScreen = ({ route, navigation }) => {
 
     const [showConfetti, setShowConfetti] = React.useState(UserHasWon);
 
-    React.useEffect(() => {
-      setTimeout(() => {
-        setShowConfetti(false);
-        UserHasWon = false
-      }, 4500);
-    }, [showConfetti]);
-
     const rotateAnim = React.useRef(new Animated.Value(0)).current;
 
     var spin = rotateAnim.interpolate({

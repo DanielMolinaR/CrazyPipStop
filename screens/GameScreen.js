@@ -95,7 +95,9 @@ function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) 
                 <View className="w-[24%] z-10 opacity-25">
                     <CpsButtonBig>
                         <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
-                            <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                            <View className="mt-2">
+                                <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                            </View>
                         </View>
                     </CpsButtonBig>
                 </View>
@@ -106,7 +108,9 @@ function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) 
                 onPress={() => setIsPenalized(!isPenalized)}>
                     <CpsButtonBig>
                         <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
-                            <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                            <View className="mt-2">
+                                <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
+                            </View>
                         </View>
                     </CpsButtonBig>
                 </Pressable>
@@ -131,10 +135,12 @@ function getMainTimer(isPenalized, isPenalizationUsed) {
         <View className="w-2/4 -mt-5 z-0">
            <CpsButtonBig>
               <View className={`flex w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
-                <StyledText 
-                    style={`text-6xl ${textStyle} font-black`} 
-                    text={`${GameMode.secondsCounter}"`} 
-                />
+                  <View className="mt-3">
+                    <StyledText 
+                        style={`text-6xl ${textStyle} font-black`} 
+                        text={`${GameMode.secondsCounter}"`} 
+                    />
+                  </View> 
               </View>
           </CpsButtonBig>
         </View>
@@ -226,7 +232,9 @@ export default function GameScreen({ route, navigation }){
                             onPress={() => navigation.navigate('Resolve', {gameMode: GameMode, setIsPenalizationUsed: setIsPenalizationUsed})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-green rounded-md justify-center">
-                                    <StyledText style="text-center text-7xl font-black text-white" text={"GO"} />
+                                    <View className="mt-3">
+                                        <StyledText style="text-center text-7xl font-black text-white" text={"GO"} />
+                                    </View>
                                 </View>
                             </CpsButtonBig>
                         </Pressable>

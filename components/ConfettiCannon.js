@@ -20,7 +20,6 @@ class CustomConfettiCannon extends React.Component {
         count={100}
         origin={{x: -20, y: 0}}
         fallSpeed={4000}
-        fadeOut={true}
         colors={['#D2160F', '#E87600', '#F7D133', '#8CC63F']}
         autoStartDelay={200}
         ref={ref => (this.explosion = ref)}

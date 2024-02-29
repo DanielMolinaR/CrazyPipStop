@@ -159,6 +159,9 @@ export default function ResolveScreen({ route, navigation }){
         }
     };
 
+    const [isRunning, setIsRunning] = React.useState(true);
+
+
     const [showAppOptions, setShowAppOptions] = React.useState(false);
 
     function sleep(ms) {
@@ -169,6 +172,7 @@ export default function ResolveScreen({ route, navigation }){
         if (hasFinished) {
             await sleep(2000)
         }
+        setIsRunning(false)
         setShowAppOptions(true)
         sound.current.unloadAsync();
     }
@@ -188,7 +192,9 @@ export default function ResolveScreen({ route, navigation }){
                         <View className="w-2/4 h-[65%] -mt-4">
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                                    <StyledText style="text-4xl text-cps-yellow font-black" text={`${time}"`} />
+                                    <View className="mt-2">
+                                        <StyledText style="text-4xl text-cps-yellow font-black" text={`${time}"`} />
+                                    </View>
                                 </View>
                             </CpsButtonBig>
                         </View>
@@ -199,7 +205,7 @@ export default function ResolveScreen({ route, navigation }){
                             style={"w-3/4 h-[50%] z-0"} 
                             until={time} 
                             onFinish={showOptionsAndHandleAudio} 
-                            running={true} 
+                            running={isRunning} 
                             onSound={play}
                         />
                         
@@ -208,7 +214,9 @@ export default function ResolveScreen({ route, navigation }){
                               onPress={() => showOptionsAndHandleAudio(false)}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <StyledText style="text-5xl font-black" text="STOP" />
+                                        <View className="mt-2">
+                                            <StyledText style="text-5xl font-black" text="STOP" />
+                                        </View>
                                     </View>
                                 </CpsButtonBig>
                             </Pressable>
