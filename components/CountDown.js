@@ -39,7 +39,7 @@ class CountDown extends React.Component {
     );
     (async () => {
       await this.props.onSound()
-      await this.sleep(5500)
+      await this.sleep(5050)
       this.timer = setInterval(this.updateTimer, 1000);
     })();  
     
