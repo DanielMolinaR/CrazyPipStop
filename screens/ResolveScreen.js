@@ -142,6 +142,11 @@ export default function ResolveScreen({ route, navigation }){
         }
       }
       sound.current.setOnPlaybackStatusUpdate(playbackStatus);
+      const unsubscribe = navigation.addListener('beforeRemove', e => {
+        if (!showAppOptions) {
+            sound.current.unloadAsync();
+        }
+      });
     }, []);
 
     const play = () => {
@@ -155,7 +160,8 @@ export default function ResolveScreen({ route, navigation }){
         if (GameMode.isPenalized) {
             await sound.current.loadAsync(GameMode.penalizedAudios[0], {}, true);
         } else {
-            await sound.current.loadAsync(GameMode.audios[0], {}, true);
+            const randomNumber =  Math.floor(Math.random() * (GameMode.audios.length));
+            await sound.current.loadAsync(GameMode.audios[randomNumber], {}, true);
         }
     };
 
