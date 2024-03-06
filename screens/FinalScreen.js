@@ -2,7 +2,6 @@ import * as React from 'react';
 import { View, ImageBackground, Image, Animated, Easing, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
 
-
 // Components
 import CpsButtonBig from '../components/CpsButtonBig';
 import StyledText from '../components/StyledText';
@@ -17,7 +16,9 @@ function sleep(ms) {
 
 async function navigate(navigation) {
   await sleep(1000)
-  navigation.popToTop();
+  if (navigation.canGoBack()) {
+    navigation.popToTop();
+  }
 }
 
 const FinalScreen = ({ route, navigation }) => {
@@ -86,7 +87,7 @@ const FinalScreen = ({ route, navigation }) => {
       if (UserHasWon) {
         await sound.current.loadAsync(GameMode.victoryAudios[0], {}, true);
       } else {
-        const randomNumber =  Math.floor(Math.random() * (GameMode.defeatAudios.length - 0)); 
+        const randomNumber =  Math.floor(Math.random() * (GameMode.defeatAudios.length)); 
         await sound.current.loadAsync(GameMode.defeatAudios[randomNumber], {}, true);
       }
     };
@@ -117,11 +118,8 @@ const FinalScreen = ({ route, navigation }) => {
                                         <StyledText style="text-5xl text-cps-red text-center font-black" text="¡¡HABEIS PERDIDO!!" />
                                     </View>
                                 )}
-                                {UserHasWon ? (
+                                {UserHasWon && (
                                     <Image className="w-[10%]" source={Screw} resizeMode="contain"/>
-                                ) : (
-                                    <View className="w-[5.5%] h-[13.8%] bg-black rounded-full">
-                                    </View>
                                 )}
                             </View>
                        </View>
