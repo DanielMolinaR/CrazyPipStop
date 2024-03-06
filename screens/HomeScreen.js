@@ -15,6 +15,9 @@ import Pattern from "../assets/images/gray-pattern.png"
 
 const track40 = require('../assets/music/countdowns/PIT_40_MASTER.mp3')
 const track30 = require('../assets/music/countdowns/PIT_30_MASTER.mp3')
+const track30N = require('../assets/music/countdowns/30_.wav')
+const track30B = require('../assets/music/countdowns/30_B.wav')
+const track30CT = require('../assets/music/countdowns/30_CT.wav')
 const track25 = require('../assets/music/countdowns/PIT_25_MASTER.mp3')
 const track20 = require('../assets/music/countdowns/PIT_20_MASTER.mp3')
 const track15 = require('../assets/music/countdowns/PIT_15_MASTER.mp3')
@@ -28,25 +31,29 @@ const familyMode = {
     secondsCounter: 40,
     audios: [track40],
     victoryAudios: [ovation],
-    defeatAudios: [defeat],
+    defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
+    penalizedAudios: [track20]
+
 };
   
 const normalMode = {
     name: "NORMAL",
     secondsCounter: 30,
-    audios: [track30],
+    audios: [track30N, track30B, track30CT],
     victoryAudios: [ovation],
-    defeatAudios: [defeat],
+    defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
     maxLosePoints: 4,
-    hasPenalization: false,
+    penalizationTime: 5,
+    hasPenalization: true,
+    penalizedAudios: [track25]
 };
   
 const advancedMode = {
@@ -54,7 +61,7 @@ const advancedMode = {
     secondsCounter: 25,
     audios: [track25],
     victoryAudios: [ovation],
-    defeatAudios: [defeat],
+    defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
@@ -67,18 +74,17 @@ const advancedMode = {
   
 const proMode = {
     name: "PRO",
-    secondsCounter: 20,
-    audios: [track20],
+    secondsCounter: 15,
+    audios: [track15],
     victoryAudios: [victoryPro],
     defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
     maxVictoryPoints: 5,
     losingPoints: 0,
     maxLosePoints: 3,
-    hasPenalization: true,
+    hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
-    penalizedAudios: [track15]
 };
 
 export default function HomeScreen({ navigation }){
