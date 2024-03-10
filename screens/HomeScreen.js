@@ -13,14 +13,18 @@ import Logo from "../assets/images/cps-logo.png"
 import Background from "../assets/images/red-background-9-16.png"
 import Pattern from "../assets/images/gray-pattern.png"
 
-const track40 = require('../assets/music/countdowns/PIT_40_MASTER.mp3')
-const track30 = require('../assets/music/countdowns/PIT_30_MASTER.mp3')
-const track30N = require('../assets/music/countdowns/30_.wav')
-const track30B = require('../assets/music/countdowns/30_B.wav')
-const track30CT = require('../assets/music/countdowns/30_CT.wav')
-const track25 = require('../assets/music/countdowns/PIT_25_MASTER.mp3')
-const track20 = require('../assets/music/countdowns/PIT_20_MASTER.mp3')
-const track15 = require('../assets/music/countdowns/PIT_15_MASTER.mp3')
+const track15N = require('../assets/music/countdowns/PIT_15.wav')
+const track15CT = require('../assets/music/countdowns/PIT_15_CT.wav')
+const track20N = require('../assets/music/countdowns/PIT_20.wav')
+const track20CT = require('../assets/music/countdowns/PIT_20_CT.wav')
+const track25N = require('../assets/music/countdowns/PIT_25.wav')
+const track25CT = require('../assets/music/countdowns/PIT_25_CT.wav')
+const track30N = require('../assets/music/countdowns/PIT_30.wav')
+const track30B = require('../assets/music/countdowns/PIT_30_B.wav')
+const track30CT = require('../assets/music/countdowns/PIT_30_CT.wav')
+const track40N = require('../assets/music/countdowns/PIT_40.wav')
+const track40CT = require('../assets/music/countdowns/PIT_40_CT.wav')
+
 const ovation = require('../assets/music/victory/OVATION.mp3')
 const victoryPro = require('../assets/music/victory/FINAL_PRO.mp3')
 const brokenCar = require('../assets/music/defeat/BROKEN_CAR.mp3')
@@ -29,7 +33,7 @@ const defeat = require('../assets/music/defeat/DEFEAT.wav')
 const familyMode = {
     name: "FAMILY",
     secondsCounter: 40,
-    audios: [track40],
+    audios: [track40N, track40CT],
     victoryAudios: [ovation],
     defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
@@ -37,8 +41,6 @@ const familyMode = {
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
-    penalizedAudios: [track20]
-
 };
   
 const normalMode = {
@@ -53,13 +55,13 @@ const normalMode = {
     maxLosePoints: 4,
     penalizationTime: 5,
     hasPenalization: true,
-    penalizedAudios: [track25]
+    penalizedAudios: [track25N, track25CT]
 };
   
 const advancedMode = {
     name: "AVANZADO",
     secondsCounter: 25,
-    audios: [track25],
+    audios: [track25N, track25CT],
     victoryAudios: [ovation],
     defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
@@ -69,13 +71,13 @@ const advancedMode = {
     hasPenalization: true,
     isPenalized: false,
     penalizationTime: 5,
-    penalizedAudios: [track20]
+    penalizedAudios: [track20N, track20CT]
 };
   
 const proMode = {
     name: "PRO",
     secondsCounter: 15,
-    audios: [track15],
+    audios: [track15N, track15CT],
     victoryAudios: [victoryPro],
     defeatAudios: [defeat, brokenCar],
     victoryPoints: 0,
@@ -90,12 +92,12 @@ const proMode = {
 export default function HomeScreen({ navigation }){
     
     async function loadAudios() {
-        familyMode.audios[0] = await Audio.Sound.createAsync(audio40)
-        normalMode.audios[0] = await Audio.Sound.createAsync(audio30)
-        advancedMode.audios[0] = await Audio.Sound.createAsync(audio25)
-        advancedMode.penalizedAudios[0] = await Audio.Sound.createAsync(audio20)
-        proMode.audios[0] = await Audio.Sound.createAsync(audio20)
-        proMode.penalizedAudios[0] = await Audio.Sound.createAsync(audio15)
+        familyMode.audios[0] = await Audio.Sound.createAsync(track40N)
+        normalMode.audios[0] = await Audio.Sound.createAsync(track30N)
+        advancedMode.audios[0] = await Audio.Sound.createAsync(track25N)
+        advancedMode.penalizedAudios[0] = await Audio.Sound.createAsync(track20N)
+        proMode.audios[0] = await Audio.Sound.createAsync(track20N)
+        proMode.penalizedAudios[0] = await Audio.Sound.createAsync(track15N)
     }
 
     // loadAudios()

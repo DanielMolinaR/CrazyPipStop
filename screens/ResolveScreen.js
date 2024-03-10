@@ -158,7 +158,8 @@ export default function ResolveScreen({ route, navigation }){
   
     const LoadAudio = async () => {
         if (GameMode.isPenalized) {
-            await sound.current.loadAsync(GameMode.penalizedAudios[0], {}, true);
+            const randomNumber =  Math.floor(Math.random() * (GameMode.penalizedAudios.length));
+            await sound.current.loadAsync(GameMode.penalizedAudios[randomNumber], {}, true);
         } else {
             const randomNumber =  Math.floor(Math.random() * (GameMode.audios.length));
             await sound.current.loadAsync(GameMode.audios[randomNumber], {}, true);
