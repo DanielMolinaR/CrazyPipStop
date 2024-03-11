@@ -13,9 +13,6 @@ class StyledText extends React.Component {
 
   normalize(size) {
     const newSize = size * scale 
-    console.log(scale)
-    console.log(newSize)
-    console.log(PixelRatio.get())
     if (Platform.OS === 'ios') {
       return Math.round(PixelRatio.roundToNearestPixel(newSize))
     } else {
