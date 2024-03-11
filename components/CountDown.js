@@ -39,7 +39,7 @@ class CountDown extends React.Component {
     );
     (async () => {
       await this.props.onSound()
-      await this.sleep(5500)
+      await this.sleep(5700)
       this.timer = setInterval(this.updateTimer, 1000);
     })();  
     
@@ -121,7 +121,7 @@ class CountDown extends React.Component {
     return (
       <CpsButtonBig>
           <View className="w-full h-full bg-cps-brown rounded-md items-center justify-end">
-              <StyledText style="text-8xl text-cps-yellow font-black" text={`${newTime}"`} />
+              <StyledText fontSize={96} style="text-cps-yellow font-black" text={`${newTime}"`} />
           </View>
       </CpsButtonBig>
     );

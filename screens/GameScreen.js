@@ -21,20 +21,24 @@ function getVictoryPoints() {
     for (var i=0; i < maxVictoriesPoints; i++) {
         if (actualVictoryPoints <= i){
             var victoryPoint = (
-                <View className="w-[52px] h-[52px]" key={i+1}>
+                <View className="w-[13%] h-[75%]" key={i+1}>
                     <CpsRoundButton>
-                        <View className="w-full h-full bg-cps-yellow rounded-full items-center">
-                            <StyledText style="text-3xl font-black" text={i+1} />
+                        <View className="w-full h-full bg-cps-yellow rounded-full items-center justify-center">
+                            <View className="-mt-1">
+                                <StyledText fontSize={30} style="font-black" text={i+1} />
+                            </View>
                         </View>
                     </CpsRoundButton>
                 </View>
             )
         } else {
             var victoryPoint = (
-                <View className="w-[52px] h-[52px]" key={i+1}>
+                <View className="w-[13%] h-[75%]" key={i+1}>
                     <CpsRoundButton>
                         <View className="w-full h-full bg-cps-green rounded-full items-center">
-                            <StyledText style="text-3xl font-black text-white" text={i+1} />
+                        <View className="-mt-1">
+                                <StyledText fontSize={30} style="font-black text-white" text={i+1} />
+                            </View>
                         </View>
                     </CpsRoundButton>
                 </View>
@@ -95,9 +99,7 @@ function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) 
                 <View className="w-[24%] z-10 opacity-25">
                     <CpsButtonBig>
                         <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
-                            <View className="mt-2">
-                                <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
-                            </View>
+                            <StyledText fontSize={40} style={`text-center ${textStyle} font-black`} text={'-5"'} />
                         </View>
                     </CpsButtonBig>
                 </View>
@@ -108,9 +110,7 @@ function getPenalizationButton(isPenalized, setIsPenalized, isPenalizationUsed) 
                 onPress={() => setIsPenalized(!isPenalized)}>
                     <CpsButtonBig>
                         <View className={`w-full h-full ${backgroundStyle} rounded-md justify-center`}>
-                            <View className="mt-2">
-                                <StyledText style={`text-center text-4xl ${textStyle} font-black`} text={'-5"'} />
-                            </View>
+                            <StyledText fontSize={40} style={`text-center ${textStyle} font-black`} text={'-5"'} />
                         </View>
                     </CpsButtonBig>
                 </Pressable>
@@ -135,12 +135,11 @@ function getMainTimer(isPenalized, isPenalizationUsed) {
         <View className="w-2/4 -mt-5 z-0">
            <CpsButtonBig>
               <View className={`flex w-full h-full ${backgroundStyle} rounded-md items-center justify-center`}>
-                  <View className="mt-3">
-                    <StyledText 
-                        style={`text-6xl ${textStyle} font-black`} 
-                        text={`${GameMode.secondsCounter}"`} 
-                    />
-                  </View> 
+                <StyledText 
+                    fontSize={60}
+                    style={`${textStyle} font-black`} 
+                    text={`${GameMode.secondsCounter}"`} 
+                />
               </View>
           </CpsButtonBig>
         </View>
@@ -159,7 +158,8 @@ function getPenalizedTime(isPenalized, isPenalizationUsed) {
                 <CpsButtonBig>
                     <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
                         <StyledText 
-                            style="text-3xl font-black text-cps-yellow"
+                            fontSize={36}
+                            style="font-black text-cps-yellow"
                             text={`${GameMode.secondsCounter - GameMode.penalizationTime}"`}
                         />
                     </View>
@@ -232,9 +232,7 @@ export default function GameScreen({ route, navigation }){
                             onPress={() => navigation.navigate('Resolve', {gameMode: GameMode, setIsPenalizationUsed: setIsPenalizationUsed})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-green rounded-md justify-center">
-                                    <View className="mt-3">
-                                        <StyledText style="text-center text-7xl font-black text-white" text={"GO"} />
-                                    </View>
+                                    <StyledText fontSize={86} style="text-center font-black text-white" text={"GO"} />
                                 </View>
                             </CpsButtonBig>
                         </Pressable>
