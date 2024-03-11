@@ -31,7 +31,7 @@ function getVictoryPoints() {
                     <CpsRoundButton>
                         <View className="w-full h-full bg-cps-yellow rounded-full items-center">
                             <View className="-mt-1">
-                                <StyledText fontSize={30} style="font-black" text={i+1} />
+                                <StyledText fontSize={26} style="font-black" text={i+1} />
                             </View>
                         </View>
                     </CpsRoundButton>
@@ -43,7 +43,7 @@ function getVictoryPoints() {
                     <CpsRoundButton>
                         <View className="w-full h-full bg-cps-green rounded-full items-center">
                             <View className="-mt-1">
-                                <StyledText fontSize={30} style="font-black text-white" text={i+1} />
+                                <StyledText fontSize={26} style="font-black text-white" text={i+1} />
                             </View>
                         </View>
                     </CpsRoundButton>
@@ -203,7 +203,7 @@ export default function ResolveScreen({ route, navigation }){
                         <View className="w-2/4 h-[65%] -mt-4">
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
-                                    <StyledText fontSize={48} style="text-cps-yellow font-black" text={`${time}"`} />
+                                    <StyledText fontSize={40} style="text-cps-yellow font-black" text={`${time}"`} />
                                 </View>
                             </CpsButtonBig>
                         </View>
@@ -223,7 +223,7 @@ export default function ResolveScreen({ route, navigation }){
                               onPress={() => showOptionsAndHandleAudio(false)}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <StyledText fontSize={48} style="font-black" text="STOP" />
+                                        <StyledText fontSize={40} style="font-black" text="STOP" />
                                     </View>
                                 </CpsButtonBig>
                             </Pressable>
@@ -247,7 +247,7 @@ export default function ResolveScreen({ route, navigation }){
                             <View className="w-3/4 h-1/2">
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <StyledText fontSize={48} style="text-center font-black" text="¿HABEIS GANADO?" />
+                                        <StyledText fontSize={36} style="text-center font-black" text="¿HABEIS GANADO?" />
                                     </View>
                                 </CpsButtonBig>
                             </View>

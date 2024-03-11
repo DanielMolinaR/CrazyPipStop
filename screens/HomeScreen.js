@@ -122,7 +122,7 @@ export default function HomeScreen({ navigation }){
                         onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                    <StyledText fontSize={36} style="font-black" text={gameMode.name.toUpperCase()} />
+                                    <StyledText fontSize={30} style="font-black" text={gameMode.name.toUpperCase()} />
                                 </View>
                             </CpsButtonBig>
                         </Pressable>

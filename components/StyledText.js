@@ -1,13 +1,26 @@
 import * as React from 'react';
-import { Text, PixelRatio } from 'react-native';
+import { Text, Dimensions, Platform, PixelRatio } from 'react-native';
 
+const {
+  width: SCREEN_WIDTH,
+  height: SCREEN_HEIGHT,
+} = Dimensions.get('window');
 
+  // based on iphone 5s's scale
+  const scale = SCREEN_WIDTH / 320;
 
 class StyledText extends React.Component {
 
   normalize(size) {
-    const fontScale = PixelRatio.getFontScale();
-    return size / fontScale;
+    const newSize = size * scale 
+    console.log(scale)
+    console.log(newSize)
+    console.log(PixelRatio.get())
+    if (Platform.OS === 'ios') {
+      return Math.round(PixelRatio.roundToNearestPixel(newSize))
+    } else {
+      return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+    }
   }
 
   render() {

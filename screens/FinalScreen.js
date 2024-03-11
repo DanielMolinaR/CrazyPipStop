@@ -111,11 +111,11 @@ const FinalScreen = ({ route, navigation }) => {
                                 <Image className="w-[10%] h-full" source={Screw} resizeMode="contain"/>
                                 {UserHasWon ? (
                                     <View className="rounded-md -mt-2">
-                                        <StyledText fontSize={48} style="text-cps-green text-center font-black" text="¡¡HABEIS GANADO!!" />
+                                        <StyledText fontSize={36} style="text-cps-green text-center font-black" text="¡¡HABEIS GANADO!!" />
                                     </View>
                                 ) : (
                                     <View className="rounded-md -mt-2">
-                                        <StyledText fontSize={48} style="text-cps-red text-center font-black" text="¡¡HABEIS PERDIDO!!" />
+                                        <StyledText fontSize={36} style="text-cps-red text-center font-black" text="¡¡HABEIS PERDIDO!!" />
                                     </View>
                                 )}
                                 {UserHasWon && (
