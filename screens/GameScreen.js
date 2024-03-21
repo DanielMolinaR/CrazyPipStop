@@ -232,7 +232,7 @@ export default function GameScreen({ route, navigation }){
                             onPress={() => navigation.navigate('Resolve', {gameMode: GameMode, setIsPenalizationUsed: setIsPenalizationUsed})}>
                             <CpsButtonBig>
                                 <View className="w-full h-full bg-cps-green rounded-md justify-center">
-                                    <StyledText fontSize={72} style="text-center font-black text-white" text={"GO"} />
+                                    <StyledText fontSize={40} style="text-center font-black text-white" text={"START"} />
                                 </View>
                             </CpsButtonBig>
                         </Pressable>

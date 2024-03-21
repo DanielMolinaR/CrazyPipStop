@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "danimr",
     "name": "CpsApp",
     "slug": "CpsApp",
     "version": "1.0.0",

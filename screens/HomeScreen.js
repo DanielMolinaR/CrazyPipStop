@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { View, Image, ImageBackground, Pressable } from 'react-native';
-import { Audio } from 'expo-av';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 var _ = require('lodash');
 
 // Components
 import CpsButtonBig from '../components/CpsButtonBig';
+import CpsButtonSmall from '../components/CpsButtonSmall';
 import StyledText from '../components/StyledText';
 
 // Images
@@ -30,8 +32,8 @@ const victoryPro = require('../assets/music/victory/FINAL_PRO.mp3')
 const brokenCar = require('../assets/music/defeat/BROKEN_CAR.mp3')
 const defeat = require('../assets/music/defeat/DEFEAT.wav')
 
-const familyMode = {
-    name: "FAMILY",
+const partyMode = {
+    name: "PARTY",
     secondsCounter: 40,
     audios: [track40N, track40CT],
     victoryAudios: [ovation],
@@ -58,8 +60,8 @@ const normalMode = {
     penalizedAudios: [track25N, track25CT]
 };
   
-const advancedMode = {
-    name: "AVANZADO",
+const expertMode = {
+    name: "EXPERT",
     secondsCounter: 25,
     audios: [track25N, track25CT],
     victoryAudios: [ovation],
@@ -90,22 +92,11 @@ const proMode = {
 };
 
 export default function HomeScreen({ navigation }){
-    
-    async function loadAudios() {
-        familyMode.audios[0] = await Audio.Sound.createAsync(track40N)
-        normalMode.audios[0] = await Audio.Sound.createAsync(track30N)
-        advancedMode.audios[0] = await Audio.Sound.createAsync(track25N)
-        advancedMode.penalizedAudios[0] = await Audio.Sound.createAsync(track20N)
-        proMode.audios[0] = await Audio.Sound.createAsync(track20N)
-        proMode.penalizedAudios[0] = await Audio.Sound.createAsync(track15N)
-    }
-
-    // loadAudios()
 
     let gameModes = [
-        familyMode, 
+        partyMode, 
         normalMode, 
-        advancedMode, 
+        expertMode, 
         proMode
     ]
 
@@ -116,17 +107,29 @@ export default function HomeScreen({ navigation }){
                 <View className="w-full h-[30%] items-center">
                     <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                 </View>
-                <View className="w-full h-full grid grid-cols-1 gap-y-4 items-center">
-                    {gameModes.map((gameMode, index) => 
-                        <Pressable key={gameMode.name} className="w-2/3 h-[12%]"
-                        onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
-                            <CpsButtonBig>
+                <View className="w-full h-[70%]">
+                    <View className="w-full h-[85%] grid grid-cols-1 gap-y-4 items-center">
+                        {gameModes.map((gameMode, index) => 
+                            <Pressable key={gameMode.name} className="w-2/3 h-[19%]"
+                            onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
+                                <CpsButtonBig>
+                                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                                        <StyledText fontSize={30} style="font-black" text={gameMode.name.toUpperCase()} />
+                                    </View>
+                                </CpsButtonBig>
+                            </Pressable>
+                        )}    
+                    </View>
+                    <View className="w-full h-[15%] items-end">
+                        <Pressable key="ThrophyButton" className="w-1/6 h-[80%] mr-6"
+                        onPress={() => navigation.navigate('Ranking')}>
+                            <CpsButtonSmall>
                                 <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                    <StyledText fontSize={30} style="font-black" text={gameMode.name.toUpperCase()} />
+                                    <Ionicons name="trophy-outline" size={24} color="black" />
                                 </View>
-                            </CpsButtonBig>
+                            </CpsButtonSmall>
                         </Pressable>
-                    )}    
+                    </View>
                 </View>
             </ImageBackground>
         </ImageBackground>
