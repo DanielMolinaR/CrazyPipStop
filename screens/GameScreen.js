@@ -25,7 +25,7 @@ function getVictoryPoints() {
                     <CpsRoundButton>
                         <View className="w-full h-full bg-cps-yellow rounded-full items-center justify-center">
                             <View className="-mt-1">
-                                    <StyledText fontSize={26} style="font-black" text={i+1} />
+                                    <StyledText fontSize={24} style="font-black" text={i+1} />
                             </View>
                         </View>
                     </CpsRoundButton>
@@ -35,9 +35,9 @@ function getVictoryPoints() {
             var victoryPoint = (
                 <View className="w-[13%] h-[75%]" key={i+1}>
                     <CpsRoundButton>
-                        <View className="w-full h-full bg-cps-green rounded-full items-center">
+                        <View className="w-full h-full bg-cps-green rounded-full items-center justify-center">
                             <View className="-mt-1">
-                                    <StyledText fontSize={26} style="font-black text-white" text={i+1} />
+                                    <StyledText fontSize={24} style="font-black text-white" text={i+1} />
                             </View>
                         </View>
                     </CpsRoundButton>

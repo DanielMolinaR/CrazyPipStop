@@ -102,8 +102,8 @@ export default function HomeScreen({ navigation }){
 
     return (
     <View className="w-full h-full max-h-max bg-gray-pattern">
-        <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
-            <ImageBackground className="w-full h-full" source={Background} resizeMode="stretch">
+        <ImageBackground className="w-full h-full" source={Pattern} resizeMode="resize">
+            <ImageBackground className="w-full h-full" source={Background} resizeMode="resize">
                 <View className="w-full h-[30%] items-center">
                     <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                 </View>

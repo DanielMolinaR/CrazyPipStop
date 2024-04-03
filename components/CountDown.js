@@ -120,7 +120,7 @@ class CountDown extends React.Component {
 
     return (
       <CpsButtonBig>
-          <View className="w-full h-full bg-cps-brown rounded-md items-center justify-end">
+          <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
               <StyledText fontSize={72} style="text-cps-yellow font-black" text={`${newTime}"`} />
           </View>
       </CpsButtonBig>

@@ -1,16 +1,16 @@
 {
   "expo": {
     "owner": "danimr",
-    "name": "CpsApp",
+    "name": "Crazy Pit Stop",
     "slug": "CpsApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/ios-crazy-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/crazy-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#D2160F"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,13 +21,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/ios-crazy-icon.png",
+        "backgroundColor": "#D2160F"
       },
       "package": "com.danimr.CpsApp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/crazy-splash.png"
     },
     "extra": {
       "eas": {

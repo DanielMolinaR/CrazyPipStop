@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'react-native';
+import { StatusBar, StyleSheet, Platform, View, SafeAreaView } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -15,6 +15,21 @@ import RankingScreen from "./screens/RankingScreen"
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  var iosStatusBar = <View></View>
+
+  if (Platform.OS === 'ios') {
+    const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+
+    const styles = StyleSheet.create({
+      appBar: {
+        backgroundColor:'#000000',
+        height: APPBAR_HEIGHT,
+      },
+    });
+
+    iosStatusBar = <View style={styles.appBar} />
+  }
 
   // TODO: Lock screen orientation
 
@@ -34,13 +49,14 @@ export default function App() {
 
   return (
     <NavigationContainer onReady={onLayoutRootView}>
-      <StatusBar 
-        animated={true}
-        backgroundColor="#000000"
-        barStyle={'default'}
-        showHideTransition={'fade'}
-        hidden={false}
-      />
+    <StatusBar 
+      animated={true}
+      backgroundColor="#000000"
+      barStyle={'default'}
+      showHideTransition={'fade'}
+      hidden={false}
+    />
+    {iosStatusBar}
     <Stack.Navigator screenOptions={{headerShown: false}}>
     <Stack.Screen key="Home" name='Home' component={HomeScreen}/>
       <Stack.Screen key="Game" name='Game' >{(props) => <GameScreen {...props}/>}</Stack.Screen>
