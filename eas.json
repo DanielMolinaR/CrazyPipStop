@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 7.4.0",
-    promptToConfigurePushNotifications: false 
+    "promptToConfigurePushNotifications": false 
   },
   "build": {
     "development": {
@@ -35,7 +35,14 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "daniel.molina.rub@gmail.com",
+        "ascAppId": "6480526149",
+        "appleTeamId": "DKNFMYQWUY",
+        "language": "es"
+      }
+    }
   }
 }
 
