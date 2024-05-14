@@ -3,7 +3,7 @@
     "owner": "danimr",
     "name": "Crazy Pit Stop",
     "slug": "CpsApp",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/ios-crazy-icon.png",
     "userInterfaceStyle": "light",
@@ -39,6 +39,12 @@
         "expo-font",
         {
           "fonts": ["./assets/fonts/AcuminVariableConcept.otf"]
+        }
+      ],
+      [
+        "expo-av",
+        {
+            "microphonePermission": false
         }
       ]
     ]

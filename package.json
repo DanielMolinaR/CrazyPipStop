@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-navigation/native-stack": "^6.9.10",
@@ -19,6 +20,7 @@
     "expo-status-bar": "~1.11.1",
     "lodash": "^4.17.21",
     "nativewind": "^2.0.11",
+    "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.73.4",
