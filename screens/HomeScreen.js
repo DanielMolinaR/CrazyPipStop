@@ -34,6 +34,8 @@ const defeat = require('../assets/music/defeat/DEFEAT.wav')
 
 const trainingMode = {
     name: "TRAINING",
+    fontSize: 30,
+    screen: "Game",
     secondsCounter: 40,
     audios: [track40N, track40CT],
     victoryAudios: [ovation],
@@ -47,6 +49,8 @@ const trainingMode = {
   
 const amateurMode = {
     name: "AMATEUR",
+    fontSize: 30,
+    screen: "Game",
     secondsCounter: 30,
     audios: [track30N, track30B, track30CT],
     victoryAudios: [ovation],
@@ -62,6 +66,8 @@ const amateurMode = {
   
 const advancedMode = {
     name: "ADVANCED",
+    fontSize: 30,
+    screen: "Game",
     secondsCounter: 25,
     audios: [track25N, track25CT],
     victoryAudios: [ovation],
@@ -78,6 +84,25 @@ const advancedMode = {
   
 const proMode = {
     name: "PRO",
+    fontSize: 30,
+    screen: "Game",
+    secondsCounter: 15,
+    audios: [track15N, track15CT],
+    victoryAudios: [victoryPro],
+    defeatAudios: [defeat, brokenCar],
+    victoryPoints: 0,
+    maxVictoryPoints: 5,
+    losingPoints: 0,
+    maxLosePoints: 3,
+    hasPenalization: false,
+    isPenalized: false,
+    penalizationTime: 5,
+};
+  
+const fastAndFurious = {
+    name: "Fast & Furious",
+    fontSize: 24,
+    screen: "",
     secondsCounter: 15,
     audios: [track15N, track15CT],
     victoryAudios: [victoryPro],
@@ -91,36 +116,38 @@ const proMode = {
     penalizationTime: 5,
 };
 
+
 export default function HomeScreen({ navigation }){
 
     let gameModes = [
         trainingMode, 
         amateurMode, 
         advancedMode, 
-        proMode
+        proMode,
+        fastAndFurious
     ]
 
     return (
     <View className="w-full h-full max-h-max bg-gray-pattern">
         <ImageBackground className="w-full h-full" source={Pattern} resizeMode="resize">
             <ImageBackground className="w-full h-full" source={Background} resizeMode="resize">
-                <View className="w-full h-[30%] items-center">
+                <View className="w-full h-[25%] items-center">
                     <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                 </View>
-                <View className="w-full h-[70%]">
-                    <View className="w-full h-[85%] grid grid-cols-1 gap-y-4 items-center">
+                <View className="w-full h-[75%]">
+                    <View className="w-full h-[87%] grid grid-cols-1 gap-y-4 items-center">
                         {gameModes.map((gameMode, index) => 
-                            <Pressable key={gameMode.name} className="w-2/3 h-[19%]"
-                            onPress={() => navigation.navigate('Game', {gameMode: _.cloneDeep(gameMode)})}>
+                            <Pressable key={gameMode.name} className="w-2/3 h-[16%]"
+                            onPress={() => navigation.navigate(gameMode.screen, {gameMode: _.cloneDeep(gameMode)})}>
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <StyledText fontSize={30} style="font-black" text={gameMode.name.toUpperCase()} />
+                                        <StyledText fontSize={gameMode.fontSize} style="font-black" text={gameMode.name.toUpperCase()} />
                                     </View>
                                 </CpsButtonBig>
                             </Pressable>
                         )}    
                     </View>
-                    <View className="w-full h-[15%] items-end">
+                    <View className="w-full h-[13%] items-end">
                         <Pressable key="ThrophyButton" className="w-1/6 h-[80%] mr-6"
                         onPress={() => navigation.navigate('Ranking')}>
                             <CpsButtonSmall>
