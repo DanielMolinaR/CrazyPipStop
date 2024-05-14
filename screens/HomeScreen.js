@@ -32,8 +32,8 @@ const victoryPro = require('../assets/music/victory/FINAL_PRO.mp3')
 const brokenCar = require('../assets/music/defeat/BROKEN_CAR.mp3')
 const defeat = require('../assets/music/defeat/DEFEAT.wav')
 
-const partyMode = {
-    name: "PARTY",
+const trainingMode = {
+    name: "TRAINING",
     secondsCounter: 40,
     audios: [track40N, track40CT],
     victoryAudios: [ovation],
@@ -45,8 +45,8 @@ const partyMode = {
     hasPenalization: false,
 };
   
-const normalMode = {
-    name: "NORMAL",
+const amateurMode = {
+    name: "AMATEUR",
     secondsCounter: 30,
     audios: [track30N, track30B, track30CT],
     victoryAudios: [ovation],
@@ -60,8 +60,8 @@ const normalMode = {
     penalizedAudios: [track25N, track25CT]
 };
   
-const expertMode = {
-    name: "EXPERT",
+const advancedMode = {
+    name: "ADVANCED",
     secondsCounter: 25,
     audios: [track25N, track25CT],
     victoryAudios: [ovation],
@@ -94,9 +94,9 @@ const proMode = {
 export default function HomeScreen({ navigation }){
 
     let gameModes = [
-        partyMode, 
-        normalMode, 
-        expertMode, 
+        trainingMode, 
+        amateurMode, 
+        advancedMode, 
         proMode
     ]
 
