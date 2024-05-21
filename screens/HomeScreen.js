@@ -45,6 +45,7 @@ const trainingMode = {
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
+    background: "bg-cps-yellow"
 };
   
 const amateurMode = {
@@ -61,7 +62,8 @@ const amateurMode = {
     maxLosePoints: 4,
     penalizationTime: 5,
     hasPenalization: true,
-    penalizedAudios: [track25N, track25CT]
+    penalizedAudios: [track25N, track25CT],
+    background: "bg-cps-yellow"
 };
   
 const advancedMode = {
@@ -79,7 +81,8 @@ const advancedMode = {
     hasPenalization: true,
     isPenalized: false,
     penalizationTime: 5,
-    penalizedAudios: [track20N, track20CT]
+    penalizedAudios: [track20N, track20CT],
+    background: "bg-cps-yellow"
 };
   
 const proMode = {
@@ -97,6 +100,7 @@ const proMode = {
     hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
+    background: "bg-cps-yellow"
 };
   
 const fastAndFurious = {
@@ -114,6 +118,7 @@ const fastAndFurious = {
     hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
+    background: "bg-cps-orange"
 };
 
 
@@ -140,7 +145,7 @@ export default function HomeScreen({ navigation }){
                             <Pressable key={gameMode.name} className="w-2/3 h-[16%]"
                             onPress={() => navigation.navigate(gameMode.screen, {gameMode: _.cloneDeep(gameMode)})}>
                                 <CpsButtonBig>
-                                    <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
+                                    <View className={`w-full h-full ${gameMode.background} rounded-md items-center justify-center`}>
                                         <StyledText fontSize={gameMode.fontSize} style="font-black" text={gameMode.name.toUpperCase()} />
                                     </View>
                                 </CpsButtonBig>
