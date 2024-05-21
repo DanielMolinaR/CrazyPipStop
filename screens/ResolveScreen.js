@@ -231,10 +231,10 @@ export default function ResolveScreen({ route, navigation }){
                     </View>
                 </View>
                 <View className="h-[27%] flex items-center justify-center">
-                    <View className="w-full basis-1/3 h-full flex flex-row gap-x-3 items-center justify-center">
+                    <View className="w-full basis-[31%] h-full flex flex-row gap-x-3 items-center justify-center">
                         {victoryPoints}
                     </View>
-                    <View className={`flex-1 w-5/6 flex flex-row gap-2 items-center justify-center ${wrap}`}>
+                    <View className={`flex-1 pt-1 w-full flex flex-row gap-2 items-center justify-center ${wrap}`}>
                         {mistakePoints}
                     </View>
                 </View>
@@ -247,7 +247,7 @@ export default function ResolveScreen({ route, navigation }){
                             <View className="w-3/4 h-1/2">
                                 <CpsButtonBig>
                                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                        <StyledText fontSize={36} style="text-center font-black" text="¿HABEIS GANADO?" />
+                                        <StyledText fontSize={36} style="text-center font-black" text="OK?" />
                                     </View>
                                 </CpsButtonBig>
                             </View>

@@ -102,8 +102,8 @@ const proMode = {
 const fastAndFurious = {
     name: "Fast & Furious",
     fontSize: 24,
-    screen: "",
-    secondsCounter: 15,
+    screen: "Game",
+    secondsCounter: 180,
     audios: [track15N, track15CT],
     victoryAudios: [victoryPro],
     defeatAudios: [defeat, brokenCar],

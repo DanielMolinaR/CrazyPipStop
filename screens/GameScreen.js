@@ -239,10 +239,10 @@ export default function GameScreen({ route, navigation }){
                     </View>
                 </View>
                 <View className="h-[27%] flex items-center justify-center">
-                    <View className="w-full basis-1/3 h-full flex flex-row gap-x-3 items-center justify-center">
+                    <View className="w-full basis-[31%] h-full flex flex-row gap-x-3 items-center justify-center">
                         {victoryPoints}
                     </View>
-                    <View className={`flex-1 w-5/6 flex flex-row gap-2 items-center justify-center ${wrap}`}>
+                    <View className={`flex-1 pt-1 w-full flex flex-row gap-2 items-center justify-center ${wrap}`}>
                         {mistakePoints}
                     </View>
                 </View>
