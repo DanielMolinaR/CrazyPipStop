@@ -34,7 +34,6 @@ const defeat = require('../assets/music/defeat/DEFEAT.wav')
 
 const trainingMode = {
     name: "TRAINING",
-    fontSize: 30,
     screen: "Game",
     secondsCounter: 40,
     audios: [track40N, track40CT],
@@ -45,12 +44,10 @@ const trainingMode = {
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
-    background: "bg-cps-yellow"
 };
   
 const amateurMode = {
     name: "AMATEUR",
-    fontSize: 30,
     screen: "Game",
     secondsCounter: 30,
     audios: [track30N, track30B, track30CT],
@@ -63,12 +60,10 @@ const amateurMode = {
     penalizationTime: 5,
     hasPenalization: true,
     penalizedAudios: [track25N, track25CT],
-    background: "bg-cps-yellow"
 };
   
 const advancedMode = {
     name: "ADVANCED",
-    fontSize: 30,
     screen: "Game",
     secondsCounter: 25,
     audios: [track25N, track25CT],
@@ -82,12 +77,10 @@ const advancedMode = {
     isPenalized: false,
     penalizationTime: 5,
     penalizedAudios: [track20N, track20CT],
-    background: "bg-cps-yellow"
 };
   
 const proMode = {
     name: "PRO",
-    fontSize: 30,
     screen: "Game",
     secondsCounter: 15,
     audios: [track15N, track15CT],
@@ -100,27 +93,7 @@ const proMode = {
     hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
-    background: "bg-cps-yellow"
 };
-  
-const fastAndFurious = {
-    name: "Fast & Furious",
-    fontSize: 24,
-    screen: "Game",
-    secondsCounter: 180,
-    audios: [track15N, track15CT],
-    victoryAudios: [victoryPro],
-    defeatAudios: [defeat, brokenCar],
-    victoryPoints: 0,
-    maxVictoryPoints: 5,
-    losingPoints: 0,
-    maxLosePoints: 3,
-    hasPenalization: false,
-    isPenalized: false,
-    penalizationTime: 5,
-    background: "bg-cps-orange"
-};
-
 
 export default function HomeScreen({ navigation }){
 
@@ -129,7 +102,6 @@ export default function HomeScreen({ navigation }){
         amateurMode, 
         advancedMode, 
         proMode,
-        fastAndFurious
     ]
 
     return (
@@ -140,13 +112,13 @@ export default function HomeScreen({ navigation }){
                     <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain"/>
                 </View>
                 <View className="w-full h-[75%]">
-                    <View className="w-full h-[87%] grid grid-cols-1 gap-y-4 items-center">
+                    <View className="w-full h-[87%] pt-4 grid grid-cols-1 gap-y-4 items-center">
                         {gameModes.map((gameMode, index) => 
                             <Pressable key={gameMode.name} className="w-2/3 h-[16%]"
                             onPress={() => navigation.navigate(gameMode.screen, {gameMode: _.cloneDeep(gameMode)})}>
                                 <CpsButtonBig>
-                                    <View className={`w-full h-full ${gameMode.background} rounded-md items-center justify-center`}>
-                                        <StyledText fontSize={gameMode.fontSize} style="font-black" text={gameMode.name.toUpperCase()} />
+                                    <View className={`w-full h-full bg-cps-yellow rounded-md items-center justify-center`}>
+                                        <StyledText fontSize="30" style="font-black" text={gameMode.name.toUpperCase()} />
                                     </View>
                                 </CpsButtonBig>
                             </Pressable>

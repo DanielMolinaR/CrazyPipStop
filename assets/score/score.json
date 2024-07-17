@@ -1,0 +1,16 @@
+{
+    "ranking": [
+        {
+            "score": 180,
+            "gameMode": "Pro"
+        },
+        {
+            "score": 140,
+            "gameMode": "Advanced"
+        },
+        {
+            "score": 120,
+            "gameMode": "Amateur"
+        }
+    ]            
+}
