@@ -118,6 +118,8 @@ class CountDown extends React.Component {
     const {seconds} = this.getTimeLeft();
     const newTime = seconds;
 
+    this.props.remainingSeconds = newTime
+
     return (
       <CpsButtonBig>
           <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">

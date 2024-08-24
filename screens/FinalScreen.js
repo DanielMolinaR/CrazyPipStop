@@ -10,6 +10,8 @@ import CustomConfettiCannon from '../components/ConfettiCannon';
 import Pattern from "../assets/images/gray-pattern.png"
 import Screw from "../assets/images/screw.png"
 
+import scoreData from '../assets/score/score.json';
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -19,6 +21,47 @@ async function navigate(navigation) {
   if (navigation.canGoBack()) {
     navigation.popToTop();
   }
+}
+
+function calculateAndStoreScore(gameMode, remainingSecondsList) {
+  var score = 0
+
+  for (let index = 0; index < remainingSecondsList.length; ++index) {
+    const seconds = remainingSecondsList[index];
+    score += seconds * gameMode.scoreMultiplier
+  }
+
+  score += gameMode.pointsForCompletion
+  storeScore(score, gameMode)
+}
+
+function storeScore(score, gameMode) {
+  gameModeName = gameMode.name
+  let ranking = []
+
+  for (let index = 0; index < scoreData.ranking.length; ++index) {
+    const storedScore = scoreData.ranking[index];
+
+    let scoreToStore = {}
+
+    if (score > storedScore.score) {
+      scoreToStore = {
+        score: score,
+        gameMode: gameModeName
+      }
+
+      score = storedScore.score
+      gameModeName = storedScore.gameMode
+
+    } else {
+      scoreToStore = storedScore
+    }
+  
+    ranking.push(scoreToStore)
+  } 
+
+  // Write the new ranking data back to the JSON file
+  fs.writeFileSync('../assets/score/score.json', JSON.stringify(ranking, null, 2));
 }
 
 const FinalScreen = ({ route, navigation }) => {
@@ -31,6 +74,7 @@ const FinalScreen = ({ route, navigation }) => {
 
     GameMode = route.params.gameMode;
     UserHasWon = route.params.userHasWon;
+    RemainingSecondsList = route.params.RemainingSecondsList
 
     const [showConfetti, setShowConfetti] = React.useState(UserHasWon);
 
@@ -41,7 +85,9 @@ const FinalScreen = ({ route, navigation }) => {
       outputRange: ['0deg', '0deg'],
     });
 
-    if (!UserHasWon) {
+    if (UserHasWon) {
+      calculateAndStoreScore(GameMode, RemainingSecondsList)
+    } else {
       React.useEffect(() => {
           Animated.timing(rotateAnim, {
             delay: 500,

@@ -44,6 +44,9 @@ const trainingMode = {
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
+    remainingSecondsLists: [],
+    scoreMultiplier: 1,
+    pointsForCompletion: 40,
 };
   
 const amateurMode = {
@@ -60,6 +63,9 @@ const amateurMode = {
     penalizationTime: 5,
     hasPenalization: true,
     penalizedAudios: [track25N, track25CT],
+    remainingSecondsLists: [],
+    scoreMultiplier: 1.7,
+    pointsForCompletion: 45,
 };
   
 const advancedMode = {
@@ -77,6 +83,9 @@ const advancedMode = {
     isPenalized: false,
     penalizationTime: 5,
     penalizedAudios: [track20N, track20CT],
+    remainingSecondsLists: [],
+    scoreMultiplier: 2.5,
+    pointsForCompletion: 55,
 };
   
 const proMode = {
@@ -93,6 +102,9 @@ const proMode = {
     hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
+    remainingSecondsLists: [],
+    scoreMultiplier: 10,
+    pointsForCompletion: 150,
 };
 
 export default function HomeScreen({ navigation }){

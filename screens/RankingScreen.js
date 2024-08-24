@@ -9,34 +9,7 @@ import Pattern from "../assets/images/gray-pattern.png"
 
 import scoreData from '../assets/score/score.json';
 
-function createRanking() {
-    var rankingComponents = []
-    /*
-    for  (let i = 0; i < scoreData.length; i++) {
-        scoreData[i]
-
-        var components = (
-            <View className="w-full h-[87%] grid grid-cols-1 gap-y-4 items-center">
-            {score.map((gameMode, index) => 
-                <Pressable key={gameMode.name} className="w-2/3 h-[16%]"
-                onPress={() => navigation.navigate(gameMode.screen, {gameMode: _.cloneDeep(gameMode)})}>
-                    <CpsButtonBig>
-                        <View className={`w-full h-full ${gameMode.background} rounded-md items-center justify-center`}>
-                            <StyledText fontSize={gameMode.fontSize} style="font-black" text={gameMode.name.toUpperCase()} />
-                        </View>
-                    </CpsButtonBig>
-                </Pressable>
-            )}    
-        </View>
-        )
-
-        rankingComponents.push(component)
-    }*/
-}
-
-const FinalScreen = ({ route, navigation }) => {
-
-    let scoreRanking = createRanking()
+const RankingScreen = ({ route, navigation }) => {
 
     return (
         <View className="w-full h-full max-h-screen">
@@ -66,4 +39,4 @@ const FinalScreen = ({ route, navigation }) => {
     )
 }
 
-export default FinalScreen;
+export default RankingScreen;
