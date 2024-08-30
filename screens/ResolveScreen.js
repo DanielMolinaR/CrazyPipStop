@@ -111,6 +111,7 @@ function navigate(navigation, remainingSeconds) {
         }
         navigation.navigate('Final',  {userHasWon: userWon, gameMode: GameMode})
     } else {
+        GameMode.remainingSecondsLists.push(remainingSeconds)
         navigation.navigate('Game', {gameMode: GameMode})
     }
     // TODO: Check how the gamemode state can be updated without this navigator

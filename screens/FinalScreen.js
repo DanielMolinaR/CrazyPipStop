@@ -61,7 +61,7 @@ function storeScore(score, gameMode) {
   } 
 
   // Write the new ranking data back to the JSON file
-  fs.writeFileSync('../assets/score/score.json', JSON.stringify(ranking, null, 2));
+  //fs.writeFileSync('../assets/score/score.json', JSON.stringify(ranking, null, 2));
 }
 
 const FinalScreen = ({ route, navigation }) => {
@@ -74,7 +74,7 @@ const FinalScreen = ({ route, navigation }) => {
 
     GameMode = route.params.gameMode;
     UserHasWon = route.params.userHasWon;
-    RemainingSecondsList = route.params.RemainingSecondsList
+    RemainingSecondsList = GameMode.remainingSecondsLists
 
     const [showConfetti, setShowConfetti] = React.useState(UserHasWon);
 

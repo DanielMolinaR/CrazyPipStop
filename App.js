@@ -1,7 +1,8 @@
+import 'react-native-reanimated';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar, StyleSheet, Platform, View, SafeAreaView } from 'react-native';
+import { StatusBar, StyleSheet, Platform, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -19,12 +20,12 @@ export default function App() {
   var iosStatusBar = <View></View>
 
   if (Platform.OS === 'ios') {
-    const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+    const APP_BAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
 
     const styles = StyleSheet.create({
       appBar: {
         backgroundColor:'#000000',
-        height: APPBAR_HEIGHT,
+        height: APP_BAR_HEIGHT,
       },
     });
 
