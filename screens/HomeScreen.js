@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { View, Image, ImageBackground, Pressable } from 'react-native';
 
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 var _ = require('lodash');
 
@@ -44,9 +43,6 @@ const trainingMode = {
     losingPoints: 0,
     maxLosePoints: 6,
     hasPenalization: false,
-    remainingSecondsLists: [],
-    scoreMultiplier: 1,
-    pointsForCompletion: 40,
 };
   
 const amateurMode = {
@@ -63,9 +59,6 @@ const amateurMode = {
     penalizationTime: 5,
     hasPenalization: true,
     penalizedAudios: [track25N, track25CT],
-    remainingSecondsLists: [],
-    scoreMultiplier: 1.7,
-    pointsForCompletion: 45,
 };
   
 const advancedMode = {
@@ -83,9 +76,6 @@ const advancedMode = {
     isPenalized: false,
     penalizationTime: 5,
     penalizedAudios: [track20N, track20CT],
-    remainingSecondsLists: [],
-    scoreMultiplier: 2.5,
-    pointsForCompletion: 55,
 };
   
 const proMode = {
@@ -102,9 +92,6 @@ const proMode = {
     hasPenalization: false,
     isPenalized: false,
     penalizationTime: 5,
-    remainingSecondsLists: [],
-    scoreMultiplier: 10,
-    pointsForCompletion: 150,
 };
 
 export default function HomeScreen({ navigation }){
@@ -135,16 +122,6 @@ export default function HomeScreen({ navigation }){
                                 </CpsButtonBig>
                             </Pressable>
                         )}    
-                    </View>
-                    <View className="w-full h-[13%] items-end">
-                        <Pressable key="ThrophyButton" className="w-1/6 h-[80%] mr-6"
-                        onPress={() => navigation.navigate('Ranking')}>
-                            <CpsButtonSmall>
-                                <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
-                                    <Ionicons name="trophy-outline" size={24} color="black" />
-                                </View>
-                            </CpsButtonSmall>
-                        </Pressable>
                     </View>
                 </View>
             </ImageBackground>

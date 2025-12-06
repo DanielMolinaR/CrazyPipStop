@@ -11,7 +11,6 @@ import HomeScreen from "./screens/HomeScreen"
 import GameScreen from "./screens/GameScreen"
 import ResolveScreen from "./screens/ResolveScreen"
 import FinalScreen from "./screens/FinalScreen"
-import RankingScreen from "./screens/RankingScreen"
 
 const Stack = createNativeStackNavigator();
 
@@ -63,7 +62,6 @@ export default function App() {
       <Stack.Screen key="Game" name='Game' >{(props) => <GameScreen {...props}/>}</Stack.Screen>
       <Stack.Screen key="Resolve" name='Resolve' >{(props) => <ResolveScreen {...props}/>}</Stack.Screen>
       <Stack.Screen key="Final" name='Final' >{(props) => <FinalScreen {...props}/>}</Stack.Screen>
-      <Stack.Screen key="Ranking" name='Ranking' >{(props) => <RankingScreen {...props}/>}</Stack.Screen>
       <Stack.Screen key="ComponentsScreen" name='ComponentsScreen' component={ComponentsScreen} />
     </Stack.Navigator>
   </NavigationContainer>

@@ -86,7 +86,7 @@ function getMistakePoints() {
     return mistakePoints;
 }
 
-function addResult(userWon, navigation, remainingSeconds) {
+function addResult(userWon, navigation) {
     if (GameMode.isPenalized){
         GameMode.isPenalized = false
         SetIsPenalizationUsed(true)
@@ -98,11 +98,10 @@ function addResult(userWon, navigation, remainingSeconds) {
         GameMode.losingPoints += 1
     }
 
-    navigate(navigation, remainingSeconds)
+    navigate(navigation)
 }
 
-function navigate(navigation, remainingSeconds) {
-    console.log(remainingSeconds)
+function navigate(navigation) {
     if (GameMode.victoryPoints >= GameMode.maxVictoryPoints || GameMode.losingPoints >= GameMode.maxLosePoints) {
         if (GameMode.victoryPoints >= GameMode.maxVictoryPoints) {
             userWon = true
@@ -111,7 +110,6 @@ function navigate(navigation, remainingSeconds) {
         }
         navigation.navigate('Final',  {userHasWon: userWon, gameMode: GameMode})
     } else {
-        GameMode.remainingSecondsLists.push(remainingSeconds)
         navigation.navigate('Game', {gameMode: GameMode})
     }
     // TODO: Check how the gamemode state can be updated without this navigator
@@ -134,7 +132,6 @@ export default function ResolveScreen({ route, navigation }){
     }
 
     let time = GameMode.secondsCounter;
-    var remainingSeconds = time
 
     if (GameMode.isPenalized) {
         time = (GameMode.secondsCounter - GameMode.penalizationTime)
@@ -219,7 +216,6 @@ export default function ResolveScreen({ route, navigation }){
                             onFinish={showOptionsAndHandleAudio} 
                             running={isRunning} 
                             onSound={play}
-                            remainingSeconds={remainingSeconds}
                         />
                         
                         <View className="flex w-full h-[50%] items-center -mt-4 z-10">
@@ -259,7 +255,7 @@ export default function ResolveScreen({ route, navigation }){
                         <View className="w-full h-1/2 items-center justify-center flex flex-row">
                             <View className="w-2/5 h-full items-start">
                                 <Pressable key={"penalization"} className="w-4/5 h-1/3"
-                                    onPress={() => addResult(false, navigation, remainingSeconds)}>
+                                    onPress={() => addResult(false, navigation)}>
                                         <View className="h-full rounded-md items-center justify-center">
                                             <Image className="w-5/6" source={red_X} resizeMode="contain"/>
                                         </View>
@@ -267,7 +263,7 @@ export default function ResolveScreen({ route, navigation }){
                             </View>
                             <View className="w-2/5 h-full items-end">
                                 <Pressable key={"penalization"} className="w-4/5 h-1/3"
-                                    onPress={() => addResult(true, navigation, remainingSeconds)}>
+                                    onPress={() => addResult(true, navigation)}>
                                         <View className="h-full rounded-md items-center justify-center">
                                             <Image className="w-5/6" source={green_tick} resizeMode="contain"/>
                                         </View>
