@@ -1,16 +1,94 @@
 # CrazyPipStop
 
-Run locally
+A casual mobile companion app for the CrazyPipStop board game: counts down each pit-stop round, plays the audio cues, and tracks the score.
+
+## Run locally
+
 ```
+npm install
 npx expo start -c
 ```
 
-Build android apk in expo
+## Dev scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm start` | Start the Expo dev server. |
+| `npm test` | Run Jest tests once (CI-friendly). |
+| `npm run test:watch` | Run Jest in watch mode for local development. |
+| `npm run lint` | Run ESLint via `expo lint` (auto-installs ESLint and `eslint-config-expo` on first run). |
+| `npm run format` | Apply Prettier to all source files. |
+| `npm run format:check` | Verify formatting without changing anything (CI-friendly). |
+
+## Build an Android APK in Expo
+
 ```
 eas build --profile preview --platform android
 ```
 
-Install and run apk build and uploaded to expo
+## Install and run an APK already uploaded to Expo
+
 ```
 eas build:run -p android
 ```
+
+## Project structure
+
+```
+App.tsx                  # Navigation root + font loading + status bar
+types.ts                 # GameMode + RootStackParamList
+assets.d.ts              # Module declarations for static asset imports
+nativewind-env.d.ts      # Type augmentation so RN components accept className
+lib/
+  gameLogic.ts             # Pure score-update + win/lose detection (unit-tested)
+screens/                 # One file per screen (Home, Game, Resolve, Final)
+components/              # Reusable UI primitives (CpsButton*, StyledText, …)
+  Scoreboard.tsx           # Victory/mistake-points row, shared by Game & Resolve
+  CountDown.tsx            # Audio-synced countdown with background-time handling
+  HomeButton.tsx           # Top-left "go to menu" button (GameScreen only)
+__tests__/               # Jest tests
+assets/                  # Images, fonts, audio
+```
+
+## Architecture notes
+
+- Game state (the current `GameMode` object — score, penalization status, etc.) flows through `react-navigation` params. State is **immutable**: every screen treats its params as read-only and forwards a new object on transition. The system back button therefore restores the previous round's state for free.
+- No persistence layer, no backend. Sessions live for the duration of the navigation stack and end when the user returns to Home.
+- NativeWind v2 styles RN components via the `className` prop; the babel plugin in `babel.config.js` rewrites those into native styles at build time.
+
+## TODO — deferred cleanup
+
+These items were intentionally **out of scope** for the recent quality pass and are queued up here so they're not forgotten.
+
+### Dependency modernization
+
+- **NativeWind v2 → v4.** v2 (`2.0.11`) is unmaintained; the library was rewritten as v4 with a different build pipeline (Metro plugin instead of Babel) and full Tailwind v3+ compatibility. Migration is non-trivial — every screen should be visually QA'd. When you do this, replace the `nativewind-env.d.ts` file with a single line: `/// <reference types="nativewind/types" />`.
+- **expo-av → expo-audio.** `expo-av` is deprecated in current Expo SDKs in favour of `expo-audio` (and `expo-video`). The current `Audio.Sound` usage in `ResolveScreen.tsx` and `FinalScreen.tsx` will need to be migrated.
+
+### Smaller polish
+
+- `lodash` is now only present as a stale dependency — no source file imports it any more. Run `npm uninstall lodash` once you've confirmed nothing else relies on it.
+- Lock screen orientation to portrait (TODO comment in `App.tsx`).
+- Replace `transformOriginView`'s `as any` cast in `FinalScreen.tsx` once a non-iOS-only style alternative is found, or guard the style with `Platform.OS === 'ios'`.
+- The `audioStoppedRef` pattern in `ResolveScreen.tsx` and `FinalScreen.tsx` is a workable but not pretty solution to the audio lifecycle race. If/when migrating to `expo-audio`, revisit and use its built-in disposal model instead.
+
+### UX / visual polish (queued after the cleanup pass)
+
+- **Home button needs more breathing room from the screen edges.** Currently positioned at `top-2 left-2` (8 px from each edge), which feels cramped on most devices. Try `top-4 left-4` or use `react-native-safe-area-context`'s `useSafeAreaInsets()` to compute platform-correct top inset on top of a fixed left inset.
+- **Defeat rotation should pivot from the screw image.** The defeat-state badge in `FinalScreen.tsx` rotates with `transformOrigin: '16%'`, which approximates the position of the screw but isn't actually anchored to it. Position the rotation origin so the badge visibly hinges on the screw graphic.
+- **HomeScreen content sits a touch too high.** Shift the whole home layout down slightly — the logo and the four mode buttons currently feel crowded against the top edge. Try increasing the top padding/spacing on the outer container and re-eyeballing.
+- **Background images take a perceptible moment to load.** The `red-background-*.png` and `gray-pattern.png` assets are large and decode on the JS thread. Options: pre-load them with `Asset.loadAsync` during splash; convert to smaller dimensions / WebP; or replace with a solid-colour fallback that swaps to the image once decoded.
+- **Add a loading screen / GIF on app boot.** Right now `App.tsx` returns `null` while fonts are loading, which means a blank screen for ~half a second. Use Expo's splash screen APIs (`expo-splash-screen` is already in the deps) to keep the splash visible until both fonts AND backgrounds are ready, or render an interim animated GIF.
+
+### Recommended sequencing
+
+The TODO items above don't need to be done in the order they're listed. The sequence below groups them by risk, scope, and dependencies — earlier batches are safe and fast, later ones are big-lift refactors that benefit from the codebase being stable underneath them.
+
+1. **Repo hygiene (~10 minutes, zero risk).** `git rm` the orphaned `.js` files listed under "Cleanup left over from the TS migration", then `npm uninstall lodash`. Run `npm test`, `npm run lint`, and `npx tsc --noEmit` after to confirm nothing broke. This shrinks the codebase by ~12 dead files and one dead dependency before any real changes start.
+2. **Quick visual polish (~30–45 minutes, low risk).** Knock out the small one-file tweaks in a single commit: home-button padding, HomeScreen content shift, defeat-rotation pivot on the screw, and lock screen orientation to portrait in `App.tsx`. Each is independent; you can stop after any of them and still ship.
+3. **Splash and asset preload (~45–60 minutes, low-to-medium risk).** Use `expo-splash-screen` and `Asset.loadAsync` in `App.tsx` to preload the background images and pattern alongside the font, then hide the splash only when everything is ready. This addresses both "background load delay" and "loading screen on app boot" in one pass since they share the same hook.
+4. **Asset audit (~30 minutes, low risk).** With the codebase stable and asset usage now centralised in the splash preload, do a real audit: which `red-background-*.png` variants are still imported, are both `*-crazy-icon.png` variants wired into `app.json`, are the small/large `x` and `tick` variants both needed. Delete what isn't used. Verify visually after.
+5. **expo-av → expo-audio migration (~1–2 hours, medium risk).** Migrate `Audio.Sound` usages in `ResolveScreen.tsx` and `FinalScreen.tsx`. While doing this, revisit the `audioStoppedRef` pattern — `expo-audio`'s built-in disposal model probably makes it obsolete. Test the rapid-click and STOP-during-load scenarios specifically; that's where audio migrations break. This sits before NativeWind so audio behaviour can be verified in isolation.
+6. **NativeWind v2 → v4 migration (~2–3 hours, highest risk).** Save for last because it touches every file with a `className` prop and changes the build pipeline (Metro plugin replaces Babel plugin). Plan to QA every screen after. When you do this, replace `nativewind-env.d.ts` with the single line `/// <reference types="nativewind/types" />` and remove the manual augmentation.
+
+The "transformOrigin cast cleanup" and "audioStoppedRef revisit" items aren't standalone steps — they're absorbed by steps 2 and 5 respectively.
