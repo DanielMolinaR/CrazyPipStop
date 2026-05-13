@@ -25,8 +25,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: Lock screen orientation to portrait.
-
 export default function App() {
   const [fontsLoaded] = useFonts({
     Acumin: require('./assets/fonts/AcuminVariableConcept.otf'),
