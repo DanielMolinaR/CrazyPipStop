@@ -91,5 +91,17 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build + submit production (iOS + Android)
-        run: eas build --profile production --platform all --non-interactive --auto-submit
+      - name: Build iOS production (auto-submit to App Store)
+        run: eas build --profile production --platform ios --non-interactive --auto-submit
+
+      # Android still uses the `preview` profile (buildType: apk) so the
+      # output is a sideloadable APK rather than a Play-store AAB. No
+      # auto-submit because Google Play credentials aren't wired up yet;
+      # the APK lands on EAS Build's storage and is downloadable from
+      # https://expo.dev/accounts/danimr/projects/CpsApp/builds. When
+      # Play creds are ready, swap this to:
+      #   eas build --profile production --platform android \
+      #     --non-interactive --auto-submit
+      # and uncomment the android submit block in eas.json.
+      - name: Build Android APK (preview profile, no submit)
+        run: eas build --profile preview --platform android --non-interactive
