@@ -1,0 +1,69 @@
+# PR gate: on every pull request targeting the trunk branch, run two
+# jobs —
+#   - "Type-check, test, lint": the same verification suite as the
+#     release pipeline's `verify` job (tsc, Jest, ESLint).
+#   - "Version bump": fails unless app.json's version was raised above
+#     the one on main, and package.json's version matches it —
+#     enforcing a manual, in-sync version bump per PR.
+#
+# To make these checks *mandatory* before merging, add both job names
+# as required status checks in the branch protection rule for `main`
+# (Settings -> Branches).
+
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+
+# Cancel a stale in-progress run when new commits are pushed to the
+# same PR — only the latest commit needs to be verified.
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Type-check, test, lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: Jest
+        run: npm test -- --ci
+
+      - name: ESLint
+        run: npm run lint
+
+  version:
+    name: Version bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Fetch base branch
+        run: git fetch --depth=1 origin ${{ github.base_ref }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check app.json version was bumped
+        run: node scripts/check-version-bump.mjs ${{ github.base_ref }}
