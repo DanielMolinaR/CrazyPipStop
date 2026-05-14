@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, ImageBackground, Image, Animated, Easing, Platform } from 'react-native';
+import { View, ImageBackground, Image, Animated, Easing } from 'react-native';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -15,13 +15,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Final'>;
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-// `transformOrigin` is iOS-only in React Native. We construct the style
-// conditionally and cast through `unknown` so TS doesn't complain about
-// the missing key in the public RN style types.
-const transformOriginStyle =
-  Platform.OS === 'ios'
-    ? ({ transformOrigin: '5% 50%' } as unknown as object)
-    : null;
+// `transformOrigin` is supported on both iOS and Android since RN 0.74,
+// but the public TypeScript style types haven't caught up. The cast is
+// purely to satisfy the compiler — it does nothing at runtime.
+// Pivot is set to roughly where the screw image sits on the badge so the
+// defeat animation hinges on it instead of swinging around the centre.
+const transformOriginStyle = { transformOrigin: '25% 50%' } as unknown as object;
 
 async function navigateHomeAfterDelay(navigation: Props['navigation']) {
   await sleep(1000);
@@ -152,9 +151,4 @@ export default function FinalScreen({ route, navigation }: Props) {
               </View>
             </CpsButtonBig>
           </Animated.View>
-        </View>
-        {showConfetti && <CustomConfettiCannon />}
-      </ImageBackground>
-    </View>
-  );
-}
+ 
