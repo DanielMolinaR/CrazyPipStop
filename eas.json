@@ -47,9 +47,13 @@
         "appleTeamId": "DKNFMYQWUY",
         "language": "es"
       },
+      /* TODO: Android submit disabled while Google Play residence
+         verification is still pending. Re-enable by removing the
+         surrounding comment markers once the service-account JSON has
+         been uploaded via `eas credentials`.
       "android": {
         "track": "internal"
-      }
+      } */
     }
   }
 }
