@@ -2,7 +2,7 @@ import 'react-native-reanimated';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar, StyleSheet, Platform, View } from 'react-native';
+import { StatusBar, StyleSheet, Platform, View, ImageBackground } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset';
@@ -35,6 +35,7 @@ const MIN_INTRO_MS = 3000;
 const APP_BAR_HEIGHT = 44;
 
 const introGif = require('./assets/images/intro.gif');
+const introBackground = require('./assets/images/red-background-9-16.png');
 
 // All image assets used by any in-app screen. Decoded into the asset cache
 // during the intro so the first navigation doesn't stall on a cold image
@@ -135,9 +136,13 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
       {!introComplete && (
-        <View style={styles.introOverlay} pointerEvents="auto">
+        <ImageBackground
+          source={introBackground}
+          style={styles.introOverlay}
+          resizeMode="stretch"
+        >
           <Image source={introGif} style={styles.introGif} contentFit="contain" />
-        </View>
+        </ImageBackground>
       )}
     </View>
   );
