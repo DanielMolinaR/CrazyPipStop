@@ -71,6 +71,7 @@ These items were intentionally **out of scope** for the recent quality pass and 
 
 ### UX / visual polish (queued after the cleanup pass)
 
+- **Hide the system status bar for the in-app screens.** Discussed during step 2 planning. Once the intro animation dismisses, switch `<StatusBar hidden />` so the game runs fully immersive. Expect small vertical-position tweaks on HomeScreen (logo) and GameScreen (home button, logo) afterwards — the system bar's ~24–44 px height was implicitly reserved by every layout, and removing it lifts content up by that amount. Best done as its own commit so the tweaks aren't entangled with the splash work.
 - **Background images take a perceptible moment to load.** The `red-background-*.png` and `gray-pattern.png` assets are large and decode on the JS thread. Options: pre-load them with `Asset.loadAsync` during splash; convert to smaller dimensions / WebP; or replace with a solid-colour fallback that swaps to the image once decoded.
 - **Add a loading screen / GIF on app boot.** Right now `App.tsx` returns `null` while fonts are loading, which means a blank screen for ~half a second. Use Expo's splash screen APIs (`expo-splash-screen` is already in the deps) to keep the splash visible until both fonts AND backgrounds are ready, or render an interim animated GIF.
 
