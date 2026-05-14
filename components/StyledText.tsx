@@ -22,7 +22,7 @@ interface StyledTextProps {
 export default function StyledText({ text, fontSize, style = '' }: StyledTextProps) {
   return (
     <Text
-      className={`text-[Axumin] ${style}`}
+      className={`text-[Acumin] ${style}`}
       allowFontScaling={false}
       style={{ fontSize: normalize(fontSize) }}
     >
