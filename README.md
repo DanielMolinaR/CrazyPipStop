@@ -69,20 +69,11 @@ These items were intentionally **out of scope** for the recent quality pass and 
 
 - The `audioStoppedRef` pattern in `ResolveScreen.tsx` and `FinalScreen.tsx` is a workable but not pretty solution to the audio lifecycle race. If/when migrating to `expo-audio`, revisit and use its built-in disposal model instead.
 
-### UX / visual polish (queued after the cleanup pass)
-
-- **Background images take a perceptible moment to load.** The `red-background-*.png` and `gray-pattern.png` assets are large and decode on the JS thread. Options: pre-load them with `Asset.loadAsync` during splash; convert to smaller dimensions / WebP; or replace with a solid-colour fallback that swaps to the image once decoded.
-- **Add a loading screen / GIF on app boot.** Right now `App.tsx` returns `null` while fonts are loading, which means a blank screen for ~half a second. Use Expo's splash screen APIs (`expo-splash-screen` is already in the deps) to keep the splash visible until both fonts AND backgrounds are ready, or render an interim animated GIF.
-
 ### Recommended sequencing
 
 The TODO items above don't need to be done in the order they're listed. The sequence below groups them by risk, scope, and dependencies — earlier batches are safe and fast, later ones are big-lift refactors that benefit from the codebase being stable underneath them.
 
-1. **Splash, intro animation, and asset preload (~1.5–2 hours, low-to-medium risk).** Three pieces, done together because they share the same boot-time hook in `App.tsx`:
-   - Configure a custom static splash image in `app.json` (the existing reference is already correct; no change needed).
-   - Use `expo-splash-screen`'s `preventAutoHideAsync()` to keep the splash visible while React mounts, then render `assets/images/intro.gif` as a full-screen overlay during the boot transition (since OS-level splash doesn't support animated formats).
-   - Preload `red-background-*.png` and `gray-pattern.png` with `Asset.loadAsync` alongside the font, and hide both the native splash and the GIF overlay once everything is ready (and the GIF has had time to play through). This kills the "background load delay" felt on first navigation as a side effect. If the GIF turns out to be heavy on lower-end devices, the fallback plan is to swap it for a Lottie animation.
-2. **expo-av → expo-audio migration (~1–2 hours, medium risk).** Migrate `Audio.Sound` usages in `ResolveScreen.tsx` and `FinalScreen.tsx`. While doing this, revisit the `audioStoppedRef` pattern — `expo-audio`'s built-in disposal model probably makes it obsolete. Test the rapid-click and STOP-during-load scenarios specifically; that's where audio migrations break. This sits before NativeWind so audio behaviour can be verified in isolation.
-3. **NativeWind v2 → v4 migration (~2–3 hours, highest risk).** Save for last because it touches every file with a `className` prop and changes the build pipeline (Metro plugin replaces Babel plugin). Plan to QA every screen after. When you do this, replace `nativewind-env.d.ts` with the single line `/// <reference types="nativewind/types" />` and remove the manual augmentation.
+1. **expo-av → expo-audio migration (~1–2 hours, medium risk).** Migrate `Audio.Sound` usages in `ResolveScreen.tsx` and `FinalScreen.tsx`. While doing this, revisit the `audioStoppedRef` pattern — `expo-audio`'s built-in disposal model probably makes it obsolete. Test the rapid-click and STOP-during-load scenarios specifically; that's where audio migrations break. This sits before NativeWind so audio behaviour can be verified in isolation.
+2. **NativeWind v2 → v4 migration (~2–3 hours, highest risk).** Save for last because it touches every file with a `className` prop and changes the build pipeline (Metro plugin replaces Babel plugin). Plan to QA every screen after. When you do this, replace `nativewind-env.d.ts` with the single line `/// <reference types="nativewind/types" />` and remove the manual augmentation.
 
-The "audioStoppedRef revisit" item isn't a standalone step — it's absorbed by step 2.
+The "audioStoppedRef revisit" item isn't a standalone step — it's absorbed by step 1.
