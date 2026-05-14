@@ -110,7 +110,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
               />
               <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                 <Pressable
-                  className="w-2/4 h-[90%] z-10"
+                  className="w-3/5 h-[90%] z-10"
                   onPress={() => showOptionsAndHandleAudio(false)}
                 >
                   <CpsButtonBig>

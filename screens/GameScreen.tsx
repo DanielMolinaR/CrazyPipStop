@@ -30,14 +30,14 @@ export default function GameScreen({ route, navigation }: Props) {
   // Top section: penalization toggle (only meaningful for modes with penalization).
   const renderPenalizationButton = () => {
     if (!gameMode.hasPenalization) {
-      return <View className="w-[26%]" />;
+      return <View className="w-[35%]" />;
     }
     const bg = isPenalized ? 'bg-cps-red' : 'bg-cps-yellow';
     const textColor = isPenalized ? 'text-white' : '';
 
     if (isPenalizationUsed) {
       return (
-        <View className="w-[24%] z-10 opacity-25">
+        <View className="w-[35%] z-10 opacity-25">
           <CpsButtonBig>
             <View className={`w-full h-full ${bg} rounded-md justify-center`}>
               <StyledText
@@ -52,7 +52,7 @@ export default function GameScreen({ route, navigation }: Props) {
     }
 
     return (
-      <Pressable className="w-[24%] z-10" onPress={() => setIsPenalized(!isPenalized)}>
+      <Pressable className="w-[35%] z-10" onPress={() => setIsPenalized(!isPenalized)}>
         <CpsButtonBig>
           <View className={`w-full h-full ${bg} rounded-md justify-center`}>
             <StyledText
@@ -89,11 +89,11 @@ export default function GameScreen({ route, navigation }: Props) {
   // Bottom of timer area: preview of the penalized (shorter) duration.
   const renderPenalizedPreview = () => {
     if (!isPenalized || isPenalizationUsed) {
-      return <View className="w-[26%]" />;
+      return <View className="w-[35%]" />;
     }
     const previewSeconds = gameMode.secondsCounter - gameMode.penalizationTime;
     return (
-      <View className="w-[26%] z-10 -mt-4">
+      <View className="w-[35%] z-10 -mt-4">
         <CpsButtonBig>
           <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
             <StyledText
@@ -129,7 +129,7 @@ export default function GameScreen({ route, navigation }: Props) {
               </View>
             </View>
             <View className="flex w-full h-2/6 items-center">
-              <Pressable className="w-2/4 h-5/6 z-10" onPress={onStart}>
+              <Pressable className="w-3/5 h-5/6 z-10" onPress={onStart}>
                 <CpsButtonBig>
                   <View className="w-full h-full bg-cps-green rounded-md justify-center">
                     <StyledText
