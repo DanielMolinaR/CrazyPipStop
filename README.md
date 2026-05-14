@@ -63,17 +63,12 @@ These items were intentionally **out of scope** for the recent quality pass and 
 ### Dependency modernization
 
 - **NativeWind v2 → v4.** v2 (`2.0.11`) is unmaintained; the library was rewritten as v4 with a different build pipeline (Metro plugin instead of Babel) and full Tailwind v3+ compatibility. Migration is non-trivial — every screen should be visually QA'd. When you do this, replace the `nativewind-env.d.ts` file with a single line: `/// <reference types="nativewind/types" />`.
-- **expo-av → expo-audio.** `expo-av` is deprecated in current Expo SDKs in favour of `expo-audio` (and `expo-video`). The current `Audio.Sound` usage in `ResolveScreen.tsx` and `FinalScreen.tsx` will need to be migrated.
 
 ### Smaller polish
 
-- The `audioStoppedRef` pattern in `ResolveScreen.tsx` and `FinalScreen.tsx` is a workable but not pretty solution to the audio lifecycle race. If/when migrating to `expo-audio`, revisit and use its built-in disposal model instead.
 
 ### Recommended sequencing
 
 The TODO items above don't need to be done in the order they're listed. The sequence below groups them by risk, scope, and dependencies — earlier batches are safe and fast, later ones are big-lift refactors that benefit from the codebase being stable underneath them.
 
-1. **expo-av → expo-audio migration (~1–2 hours, medium risk).** Migrate `Audio.Sound` usages in `ResolveScreen.tsx` and `FinalScreen.tsx`. While doing this, revisit the `audioStoppedRef` pattern — `expo-audio`'s built-in disposal model probably makes it obsolete. Test the rapid-click and STOP-during-load scenarios specifically; that's where audio migrations break. This sits before NativeWind so audio behaviour can be verified in isolation.
-2. **NativeWind v2 → v4 migration (~2–3 hours, highest risk).** Save for last because it touches every file with a `className` prop and changes the build pipeline (Metro plugin replaces Babel plugin). Plan to QA every screen after. When you do this, replace `nativewind-env.d.ts` with the single line `/// <reference types="nativewind/types" />` and remove the manual augmentation.
-
-The "audioStoppedRef revisit" item isn't a standalone step — it's absorbed by step 1.
+1. **NativeWind v2 → v4 migration (~2–3 hours, highest risk).** v2 (`2.0.11`) is unmaintained; v4 uses a Metro plugin instead of Babel and brings full Tailwind v3+ compatibility. Touches every file with a `className` prop. Plan to QA every screen after. When you do this, replace `nativewind-env.d.ts` with the single line `/// <reference types="nativewind/types" />` and remove the manual augmentation.
