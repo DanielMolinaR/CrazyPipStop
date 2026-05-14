@@ -1,0 +1,45 @@
+# PR gate: on every pull request targeting the trunk branch, run the
+# same verification suite as the release pipeline's `verify` job —
+# TypeScript type-checking, Jest, and ESLint.
+#
+# To make these checks *mandatory* before merging, add the
+# "Type-check, test, lint" job as a required status check in the
+# branch protection rule for `main` (Settings -> Branches).
+
+name: PR checks
+
+on:
+  pull_request:
+    branches: [main]
+
+# Cancel a stale in-progress run when new commits are pushed to the
+# same PR — only the latest commit needs to be verified.
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Type-check, test, lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: Jest
+        run: npm test -- --ci
+
+      - name: ESLint
+        run: npm run lint
