@@ -141,7 +141,7 @@ export default function App() {
           style={styles.introOverlay}
           resizeMode="stretch"
         >
-          <Image source={introGif} style={styles.introGif} contentFit="contain" />
+          <Image source={introGif} style={styles.introGif} contentFit="cover" />
         </ImageBackground>
       )}
     </View>
