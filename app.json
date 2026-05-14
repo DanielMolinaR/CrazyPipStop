@@ -38,13 +38,9 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/AcuminVariableConcept.otf"]
-        }
-      ],
-      [
-        "expo-av",
-        {
-            "microphonePermission": false
+          "fonts": [
+            "./assets/fonts/AcuminVariableConcept.otf"
+          ]
         }
       ]
     ]

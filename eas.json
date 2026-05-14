@@ -29,9 +29,13 @@
       }
     },*/
     "production": {
+      "autoIncrement": true,
       "ios": {
         "resourceClass": "m-medium",
         "image": "macos-sequoia-15.3-xcode-16.2"
+      },
+      "android": {
+        "buildType": "app-bundle"
       }
     }
   },
@@ -42,7 +46,14 @@
         "ascAppId": "6480526149",
         "appleTeamId": "DKNFMYQWUY",
         "language": "es"
-      }
+      },
+      /* TODO: Android submit disabled while Google Play residence
+         verification is still pending. Re-enable by removing the
+         surrounding comment markers once the service-account JSON has
+         been uploaded via `eas credentials`.
+      "android": {
+        "track": "internal"
+      } */
     }
   }
 }
