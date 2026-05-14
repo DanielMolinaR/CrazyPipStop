@@ -36,6 +36,7 @@ const APP_BAR_HEIGHT = 44;
 
 const introGif = require('./assets/images/intro.gif');
 const introBackground = require('./assets/images/gray-pattern.png');
+const introLogo = require('./assets/images/cps-logo.png');
 
 // All image assets used by any in-app screen. Decoded into the asset cache
 // during the intro so the first navigation doesn't stall on a cold image
@@ -72,6 +73,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     zIndex: 100,
     elevation: 100,
+  },
+  introLogoSlot: {
+    width: '100%',
+    height: '25%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  introLogo: {
+    width: '83%',
+    height: '83%',
+  },
+  introGifSlot: {
+    width: '100%',
+    height: '75%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   introGif: {
     width: '100%',
@@ -141,7 +158,12 @@ export default function App() {
           style={styles.introOverlay}
           resizeMode="stretch"
         >
-          <Image source={introGif} style={styles.introGif} contentFit="contain" />
+          <View style={styles.introLogoSlot}>
+            <Image source={introLogo} style={styles.introLogo} contentFit="contain" />
+          </View>
+          <View style={styles.introGifSlot}>
+            <Image source={introGif} style={styles.introGif} contentFit="contain" />
+          </View>
         </ImageBackground>
       )}
     </View>
