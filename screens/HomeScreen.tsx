@@ -126,7 +126,7 @@ export default function HomeScreen({ navigation }: Props) {
             <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain" />
           </View>
           <View className="w-full h-[75%]">
-            <View className="w-full h-[87%] pt-4 grid grid-cols-1 gap-y-4 items-center">
+            <View className="w-full h-[87%] pt-12 gap-y-4 items-center">
               {gameModes.map((mode) => (
                 <Pressable
                   key={mode.name}
