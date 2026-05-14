@@ -15,6 +15,7 @@ module.exports = [
       'tailwind.config.js',
       'metro.config.js',
       'assets/**',
+      'scripts/**',
       // The orphaned .js files left over from the TS migration — they're
       // one-line deprecation stubs and not worth linting. Delete them
       // following the README cleanup instructions and these entries can
