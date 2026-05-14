@@ -64,9 +64,6 @@ These items were intentionally **out of scope** for the recent quality pass and 
 
 - **NativeWind v2 → v4.** v2 (`2.0.11`) is unmaintained; the library was rewritten as v4 with a different build pipeline (Metro plugin instead of Babel) and full Tailwind v3+ compatibility. Migration is non-trivial — every screen should be visually QA'd. When you do this, replace the `nativewind-env.d.ts` file with a single line: `/// <reference types="nativewind/types" />`.
 
-### Smaller polish
-
-
 ### Recommended sequencing
 
 The TODO items above don't need to be done in the order they're listed. The sequence below groups them by risk, scope, and dependencies — earlier batches are safe and fast, later ones are big-lift refactors that benefit from the codebase being stable underneath them.
