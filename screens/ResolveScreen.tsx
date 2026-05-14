@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Image, ImageBackground, Pressable } from 'react-native';
-import { Audio, AVPlaybackStatus } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import CpsButtonBig from '../components/CpsButtonBig';
@@ -26,61 +26,33 @@ export default function ResolveScreen({ route, navigation }: Props) {
     ? gameMode.secondsCounter - gameMode.penalizationTime
     : gameMode.secondsCounter;
 
-  const sound = React.useRef(new Audio.Sound());
-  // Tracks whether audio playback for this screen has been cancelled (by the
-  // user pressing STOP, by ✓/✗ navigating away, or by the component
-  // unmounting). Set to true once and never flipped back. We check it after
-  // every async audio operation so a slow `loadAsync` that completes after
-  // the user has already moved on doesn't leak a playing sound onto the
-  // next screen.
-  const audioStoppedRef = React.useRef<boolean>(false);
+  // Pick the countdown audio track once per mount so the source passed to
+  // useAudioPlayer is stable for the life of this screen. Penalized vs.
+  // normal bank picked from the gameMode params, then a random pick within
+  // that bank. Empty deps means the pick is final for this mount —
+  // re-renders never roll a new track on the same round.
+  const audioSource = React.useMemo(() => {
+    const tracks = gameMode.isPenalized ? gameMode.penalizedAudios : gameMode.audios;
+    if (tracks.length === 0) return null;
+    return tracks[Math.floor(Math.random() * tracks.length)];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useAudioPlayer ties the player's lifecycle to this component — when
+  // the screen unmounts (next round, back navigation, etc.), the player is
+  // released automatically. That replaces all the manual loadAsync /
+  // unloadAsync / audioStoppedRef bookkeeping that lived here under
+  // expo-av.
+  const player = useAudioPlayer(audioSource);
+
   const [isRunning, setIsRunning] = React.useState<boolean>(true);
   const [showAppOptions, setShowAppOptions] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-      if (status.isLoaded && status.didJustFinish && !status.isLooping) {
-        sound.current.unloadAsync();
-      }
-    };
-    sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-
-    // unloadAsync is idempotent, so we can safely call it on every leave event.
-    const unsubscribe = navigation.addListener('beforeRemove', () => {
-      audioStoppedRef.current = true;
-      sound.current.unloadAsync();
-    });
-
-    return () => {
-      audioStoppedRef.current = true;
-      unsubscribe();
-      sound.current.unloadAsync();
-    };
-  }, [navigation]);
-
-  const loadAndPlay = async () => {
-    if (audioStoppedRef.current) return;
-    const tracks = gameMode.isPenalized ? gameMode.penalizedAudios : gameMode.audios;
-    if (tracks.length === 0) return;
-    const idx = Math.floor(Math.random() * tracks.length);
-    try {
-      // shouldPlay=false on load, then explicit playAsync — this gives us a
-      // checkpoint between "resource allocated" and "audio audible" where
-      // we can bail if the user has tapped STOP or navigated away during
-      // the load. With shouldPlay=true we'd be racing playback against the
-      // unload call, which is what caused overlapping audio on rapid taps.
-      await sound.current.loadAsync(tracks[idx], {}, false);
-      if (audioStoppedRef.current) {
-        await sound.current.unloadAsync();
-        return;
-      }
-      await sound.current.playAsync();
-    } catch {
-      try {
-        await sound.current.unloadAsync();
-      } catch {
-        /* ignore — the sound may already be unloaded */
-      }
+  // CountDown calls this once on mount (via its onSound prop) to kick off
+  // the audio cue alongside the visual lead-in delay.
+  const playAudio = () => {
+    if (audioSource) {
+      player.play();
     }
   };
 
@@ -92,8 +64,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
     }
     setIsRunning(false);
     setShowAppOptions(true);
-    audioStoppedRef.current = true;
-    sound.current.unloadAsync();
+    player.pause();
   };
 
   const onResult = (userWon: boolean) => {
@@ -135,7 +106,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
                 until={time}
                 onFinish={showOptionsAndHandleAudio}
                 running={isRunning}
-                onSound={loadAndPlay}
+                onSound={playAudio}
               />
               <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                 <Pressable
