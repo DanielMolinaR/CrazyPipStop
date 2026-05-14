@@ -116,7 +116,7 @@ export default function GameScreen({ route, navigation }: Props) {
         <HomeButton onPress={() => navigation.popToTop()} />
         <View className="flex w-full h-full absolute">
           <View className="flex gap-y-1 w-full h-[73%]">
-            <View className="w-full h-1/6 items-center">
+            <View className="w-full h-1/6 items-center justify-end">
               <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain" />
             </View>
             <View className="flex w-full h-3/6">
@@ -150,6 +150,4 @@ export default function GameScreen({ route, navigation }: Props) {
           />
         </View>
       </ImageBackground>
-    </View>
-  );
-}
+    </V
