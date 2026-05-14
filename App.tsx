@@ -142,7 +142,7 @@ export default function App() {
           backgroundColor="#000000"
           barStyle="default"
           showHideTransition="fade"
-          hidden={false}
+          hidden={introComplete}
         />
         {Platform.OS === 'ios' && <View style={styles.appBar} />}
         <Stack.Navigator screenOptions={{ headerShown: false }}>
