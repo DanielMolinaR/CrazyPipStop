@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, ImageBackground, Image, Animated, Easing } from 'react-native';
-import { Audio, AVPlaybackStatus } from 'expo-av';
+import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import CpsButtonBig from '../components/CpsButtonBig';
@@ -34,15 +34,30 @@ export default function FinalScreen({ route, navigation }: Props) {
 
   const [showConfetti] = React.useState<boolean>(userHasWon);
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
-  const sound = React.useRef(new Audio.Sound());
-  // See ResolveScreen.tsx for the full rationale — set once when audio
-  // should no longer play, checked after each async audio op.
-  const audioStoppedRef = React.useRef<boolean>(false);
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: userHasWon ? ['0deg', '0deg'] : ['0deg', '90deg'],
   });
+
+  // Pick the outcome audio once per mount. Victory uses the configured
+  // single victory sting (first entry); defeat randomly picks from the
+  // bank. Empty deps -> the pick is final for this mount.
+  const audioSource = React.useMemo(() => {
+    if (userHasWon) {
+      return gameMode.victoryAudios.length > 0 ? gameMode.victoryAudios[0] : null;
+    }
+    if (gameMode.defeatAudios.length === 0) return null;
+    return gameMode.defeatAudios[
+      Math.floor(Math.random() * gameMode.defeatAudios.length)
+    ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // useAudioPlayer's hook lifecycle releases the player when this screen
+  // unmounts — no manual unloadAsync or audioStoppedRef bookkeeping
+  // required.
+  const player = useAudioPlayer(audioSource);
 
   // Defeat animation: bounce the badge sideways. Always declare the effect
   // at the top level (rules of hooks); skip the animation when the user won.
@@ -57,59 +72,35 @@ export default function FinalScreen({ route, navigation }: Props) {
     }).start();
   }, [rotateAnim, userHasWon]);
 
-  // Audio lifecycle: register the playback-finished handler and the
-  // beforeRemove listener that pops to home on back navigation.
+  // Start the outcome audio once on mount.
   React.useEffect(() => {
-    const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-      if (status.isLoaded && status.didJustFinish && !status.isLooping) {
-        sound.current.unloadAsync();
-        navigateHomeAfterDelay(navigation);
-      }
-    };
-    sound.current.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-
-    const unsubscribe = navigation.addListener('beforeRemove', () => {
-      unsubscribe(); // unsubscribe first to prevent infinite loop
-      audioStoppedRef.current = true;
-      sound.current.unloadAsync();
-      navigation.popToTop();
-    });
-
-    return () => {
-      audioStoppedRef.current = true;
-      sound.current.unloadAsync();
-    };
-  }, [navigation]);
-
-  // Load and play the victory/defeat audio once on mount.
-  React.useEffect(() => {
-    const loadAndPlay = async () => {
-      if (audioStoppedRef.current) return;
-      try {
-        if (userHasWon) {
-          if (gameMode.victoryAudios.length === 0) return;
-          await sound.current.loadAsync(gameMode.victoryAudios[0], {}, false);
-        } else {
-          if (gameMode.defeatAudios.length === 0) return;
-          const idx = Math.floor(Math.random() * gameMode.defeatAudios.length);
-          await sound.current.loadAsync(gameMode.defeatAudios[idx], {}, false);
-        }
-        if (audioStoppedRef.current) {
-          await sound.current.unloadAsync();
-          return;
-        }
-        await sound.current.playAsync();
-      } catch {
-        try {
-          await sound.current.unloadAsync();
-        } catch {
-          /* ignore */
-        }
-      }
-    };
-    loadAndPlay();
+    if (audioSource) {
+      player.play();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // When the audio finishes naturally, return to Home after a short
+  // delay. Replaces the old setOnPlaybackStatusUpdate hook on the
+  // Audio.Sound instance.
+  React.useEffect(() => {
+    const sub = player.addListener('playbackStatusUpdate', (status) => {
+      if (status.didJustFinish) {
+        navigateHomeAfterDelay(navigation);
+      }
+    });
+    return () => sub.remove();
+  }, [player, navigation]);
+
+  // Override the system back button: any leave from this screen pops
+  // straight to Home rather than landing back on Resolve.
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      unsubscribe(); // unsubscribe first to prevent infinite loop
+      navigation.popToTop();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View className="w-full h-full max-h-screen">
