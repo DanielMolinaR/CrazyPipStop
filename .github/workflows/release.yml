@@ -1,0 +1,95 @@
+# Release pipeline: on every push to the trunk branch (and on manual
+# workflow_dispatch), verify the codebase, then build and auto-submit
+# the production profile to both stores via EAS.
+#
+# What gets gated where:
+#   - The `verify` job runs TypeScript type-checking, Jest tests, and
+#     ESLint. A failure in any of these blocks the release job.
+#   - The `release` job only starts after `verify` passes. It uses
+#     EAS to build the iOS + Android production binaries and submits
+#     them automatically (App Store Connect for iOS, Google Play
+#     internal track for Android).
+#
+# Build version codes / build numbers are auto-incremented per-platform
+# by EAS (see `autoIncrement: true` in eas.json's production profile),
+# so consecutive releases always have monotonically increasing
+# identifiers as required by the stores.
+#
+# Manual run: from the GitHub Actions tab pick "Release to app stores"
+# and click "Run workflow".
+#
+# Required GitHub repo secrets:
+#   EXPO_TOKEN
+#     An Expo access token. Create one at:
+#     https://expo.dev/accounts/danimr/settings/access-tokens
+#     Then add it under Settings -> Secrets and variables -> Actions.
+#
+# Store credentials are managed by EAS itself (run `eas credentials`
+# once locally to wire up Apple App Store Connect API keys and a
+# Google Play service-account JSON). They are NOT stored in this repo.
+
+name: Release to app stores
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only one release run at a time. Don't cancel an in-flight build if
+# another push arrives — let it finish so we don't waste EAS quota on
+# half-built artifacts.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Type-check, test, lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: Jest
+        run: npm test -- --ci
+
+      - name: ESLint
+        run: npm run lint
+
+  release:
+    name: EAS build + submit (iOS + Android)
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build + submit production (iOS + Android)
+        run: eas build --profile production --platform all --non-interactive --auto-submit

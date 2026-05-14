@@ -32,6 +32,28 @@ eas build --profile preview --platform android
 eas build:run -p android
 ```
 
+## Release pipeline (automated)
+
+Every push to `main` (or a manual run from the GitHub Actions tab) triggers
+`.github/workflows/release.yml`, which:
+
+1. **Verifies** the codebase — `npx tsc --noEmit`, `npm test -- --ci`, `npm run lint`. A failure in any of these blocks the release.
+2. **Builds + submits** the production profile to both stores via EAS — App Store Connect for iOS and the Google Play `internal` track for Android. Build numbers are auto-incremented per platform (`autoIncrement: true` on the production build profile in `eas.json`).
+
+### One-time setup before the workflow can run
+
+1. Generate an Expo access token at <https://expo.dev/accounts/danimr/settings/access-tokens> and add it as a GitHub repo secret named `EXPO_TOKEN` (Settings → Secrets and variables → Actions).
+2. Run `eas credentials` locally once to wire up store credentials — Apple App Store Connect API key for iOS and a Google Play service-account JSON for Android. These live on EAS's servers, not in this repo.
+3. Make sure your trunk branch is named `main`. If it isn't, change the branch name on the `on.push.branches` line in `release.yml`.
+
+### Cadence and quota
+
+EAS Build's free tier caps the number of remote builds per month. iOS and Android each count as a separate build, so a single push to `main` consumes two slots. Avoid pushing release-trigger commits in rapid succession — if you're iterating, branch off and only merge when the diff is genuinely ready to ship. If you want a deliberate gate, the workflow also supports manual `workflow_dispatch`; you can switch off the `push:` trigger entirely if pure-manual releases feel safer.
+
+### Skipping a release
+
+For commits that don't warrant a build (docs-only changes, README tweaks), include `[skip ci]` in the commit message and GitHub Actions will skip the run. Or do those changes on a side branch and merge them with a non-release strategy.
+
 ## Project structure
 
 ```
