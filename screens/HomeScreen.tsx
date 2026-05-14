@@ -115,9 +115,13 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   return (
-    <View className="w-full h-full max-h-max bg-gray-pattern pt-4">
+    <View className="w-full h-full max-h-max bg-gray-pattern">
       <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
-        <ImageBackground className="w-full h-full" source={Background} resizeMode="stretch">
+        <ImageBackground
+          className="w-full h-full pt-4"
+          source={Background}
+          resizeMode="stretch"
+        >
           <View className="w-full h-[25%] items-center">
             <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain" />
           </View>
