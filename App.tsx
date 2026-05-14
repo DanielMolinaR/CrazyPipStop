@@ -40,11 +40,9 @@ const introLogo = require('./assets/images/cps-logo.png');
 
 // All image assets used by any in-app screen. Decoded into the asset cache
 // during the intro so the first navigation doesn't stall on a cold image
-// load. Audio is intentionally not preloaded here — Asset.loadAsync only
-// resolves URIs for local bundle assets, and the heavy lifting for audio
-// (Audio.Sound.loadAsync) happens at use time regardless. A future
-// expo-av -> expo-audio migration is the right place to add real audio
-// preload via a sound pool.
+// load. Audio is intentionally not preloaded here — the per-screen
+// useAudioPlayer hook (expo-audio) handles allocation and disposal
+// itself, and CountDown's 5.2 s lead-in masks any first-play latency.
 const imageAssetsToPreload = [
   require('./assets/images/cps-logo.png'),
   require('./assets/images/gray-pattern.png'),
