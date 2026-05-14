@@ -43,7 +43,7 @@ Every push to `main` (or a manual run from the GitHub Actions tab) triggers
 ### One-time setup before the workflow can run
 
 1. Generate an Expo access token at <https://expo.dev/accounts/danimr/settings/access-tokens> and add it as a GitHub repo secret named `EXPO_TOKEN` (Settings → Secrets and variables → Actions).
-2. Run `eas credentials` locally once to wire up store credentials — Apple App Store Connect API key for iOS and a Google Play service-account JSON for Android. These live on EAS's servers, not in this repo.
+2. Install the EAS CLI locally (one-time): `npm install -g eas-cli` (or use `npx eas-cli ...` ad-hoc). Then `eas login` to your Expo account, followed by `eas credentials` — that opens an interactive menu where you upload the Apple App Store Connect API key (.p8 file) for iOS and the Google Play service-account JSON for Android. Credentials live on EAS's servers, not in this repo.
 3. Make sure your trunk branch is named `main`. If it isn't, change the branch name on the `on.push.branches` line in `release.yml`.
 
 ### Cadence and quota
