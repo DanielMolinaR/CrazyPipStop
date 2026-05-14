@@ -150,4 +150,6 @@ export default function GameScreen({ route, navigation }: Props) {
           />
         </View>
       </ImageBackground>
-    </V
+    </View>
+  );
+}

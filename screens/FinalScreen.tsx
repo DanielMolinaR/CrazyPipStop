@@ -151,4 +151,9 @@ export default function FinalScreen({ route, navigation }: Props) {
               </View>
             </CpsButtonBig>
           </Animated.View>
- 
+        </View>
+        {showConfetti && <CustomConfettiCannon />}
+      </ImageBackground>
+    </View>
+  );
+}
