@@ -15,7 +15,7 @@ interface HomeButtonProps {
 // reads as part of the same button family.
 export default function HomeButton({ onPress }: HomeButtonProps) {
   return (
-    <View className="absolute top-12 left-4 w-14 h-14 z-30" style={{ zIndex: 30 }}>
+    <View className="absolute top-12 left-4 w-16 h-16 z-30" style={{ zIndex: 30 }}>
       <Pressable onPress={onPress} className="w-full h-full">
         <CpsButtonSmall>
           <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
