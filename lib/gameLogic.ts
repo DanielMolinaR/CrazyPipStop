@@ -45,3 +45,19 @@ export function isGameOver(mode: GameMode): boolean {
 export function didPlayerWin(mode: GameMode): boolean {
   return mode.victoryPoints >= mode.maxVictoryPoints;
 }
+
+/**
+ * Deep-clone a `GameMode` so the returned value shares no array
+ * references with the input. Used by Home → Game navigation to start
+ * each session from a fresh copy — the mode templates in `gameModes.ts`
+ * live for the app's lifetime and must not be mutated mid-game.
+ */
+export function cloneGameMode(mode: GameMode): GameMode {
+  return {
+    ...mode,
+    audios: [...mode.audios],
+    victoryAudios: [...mode.victoryAudios],
+    defeatAudios: [...mode.defeatAudios],
+    penalizedAudios: [...mode.penalizedAudios],
+  };
+}

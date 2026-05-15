@@ -189,9 +189,11 @@ eslint.config.js         Flat config extending eslint-config-expo
 .prettierrc.json         Style: single quotes, semis, 100 cols
 tsconfig.json            Extends expo/tsconfig.base, strict mode
 lib/
-  gameLogic.ts           Pure functions: advanceMode, isGameOver, didPlayerWin
+  gameLogic.ts           Pure functions: advanceMode, isGameOver, didPlayerWin, cloneGameMode
+  gameModes.ts           The four GameMode templates + their audio require()s
+  gameLogic.test.ts      Jest tests for the lib helpers + catalog sanity (17 cases)
 screens/
-  HomeScreen.tsx         Mode picker — defines the four GameMode templates
+  HomeScreen.tsx         Mode picker — renders the gameModes catalog from lib/
   GameScreen.tsx         Pre-round: penalization toggle + Scoreboard + START
   ResolveScreen.tsx      Countdown + STOP + OK?/✓/✗ overlay
   FinalScreen.tsx        Victory/defeat badge with rotation animation
@@ -204,10 +206,11 @@ components/
   CountDown.tsx          Audio-synced countdown with background-time handling
   Scoreboard.tsx         Victory/mistake-points row (shared by Game & Resolve)
   HomeButton.tsx         Top-left "go to menu" button (GameScreen only)
-__tests__/
-  gameLogic.test.ts      Jest tests for lib/gameLogic.ts (15 cases)
+scripts/
+  check-version-bump.mjs Fails the PR pipeline unless app.json's version was bumped
 .github/workflows/
-  release.yml            Verify + EAS build + iOS submit + Android APK
+  pr.yml                 PR gate: tsc + Jest + ESLint + version-bump check
+  release.yml            EAS build + iOS submit + Android APK on PR-merge
 eas.json                 EAS build/submit profiles (development, preview, production)
 app.json                 Expo app config (icon, splash, plugins)
 assets/
