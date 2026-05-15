@@ -77,10 +77,6 @@ export default function FinalScreen({ route, navigation }: Props) {
   // Start the outcome audio once on mount.
   React.useEffect(() => {
     if (audioSource) {
-      // Temporary diagnostic — confirms via Xcode device console that the
-      // player fires at all (helps diagnose if iPad audio is still dead
-      // after the silent-switch fix). Strip in a follow-up once confirmed.
-      if (__DEV__) console.log('[Final] playing outcome audio');
       player.play();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

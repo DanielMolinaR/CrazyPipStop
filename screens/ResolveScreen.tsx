@@ -54,11 +54,6 @@ export default function ResolveScreen({ route, navigation }: Props) {
   // the audio cue alongside the visual lead-in delay.
   const playAudio = () => {
     if (audioSource) {
-      // Temporary diagnostic — confirms via Xcode device console that the
-      // player fires at all (helps diagnose if iPad audio is still dead
-      // after the silent-switch fix). Strip in a follow-up once
-      // confirmed working.
-      if (__DEV__) console.log('[Resolve] playAudio firing');
       player.play();
     }
   };
