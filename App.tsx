@@ -3,7 +3,7 @@ import './global.css';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar, StyleSheet, Platform, View, ImageBackground } from 'react-native';
+import { StatusBar, StyleSheet, Platform, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset';
@@ -14,6 +14,7 @@ import HomeScreen from './screens/HomeScreen';
 import GameScreen from './screens/GameScreen';
 import ResolveScreen from './screens/ResolveScreen';
 import FinalScreen from './screens/FinalScreen';
+import Background from './components/Background';
 import PhoneFrame from './components/PhoneFrame';
 import type { RootStackParamList } from './types';
 
@@ -169,7 +170,7 @@ export default function App() {
       {!introComplete && (
         <View style={styles.introOverlay}>
           <PhoneFrame>
-            <ImageBackground
+            <Background
               source={introBackground}
               style={styles.introContent}
               resizeMode="stretch"
@@ -180,7 +181,7 @@ export default function App() {
               <View style={styles.introGifSlot}>
                 <Image source={introGif} style={styles.introGif} contentFit="contain" />
               </View>
-            </ImageBackground>
+            </Background>
           </PhoneFrame>
         </View>
       )}

@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import Background from '../components/Background';
 import CpsButtonBig from '../components/CpsButtonBig';
 import HomeButton from '../components/HomeButton';
 import PhoneFrame from '../components/PhoneFrame';
@@ -10,7 +11,7 @@ import StyledText from '../components/StyledText';
 import type { RootStackParamList } from '../types';
 
 import Logo from '../assets/images/cps-logo.png';
-import Background from '../assets/images/red-background-75_9-16.png';
+import RedBackground from '../assets/images/red-background-75_9-16.png';
 import Pattern from '../assets/images/gray-pattern.png';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Game'>;
@@ -111,9 +112,9 @@ export default function GameScreen({ route, navigation }: Props) {
   return (
     <PhoneFrame>
       <View className="w-full h-full max-h-screen">
-      <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
+      <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="h-3/4">
-          <ImageBackground className="w-full h-full" source={Background} />
+          <Background className="w-full h-full" source={RedBackground} />
         </View>
         <HomeButton onPress={() => navigation.popToTop()} />
         <View className="flex w-full h-full absolute">
@@ -151,7 +152,7 @@ export default function GameScreen({ route, navigation }: Props) {
             maxLosePoints={gameMode.maxLosePoints}
           />
         </View>
-      </ImageBackground>
+      </Background>
     </View>
     </PhoneFrame>
   );

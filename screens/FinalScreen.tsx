@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { View, ImageBackground, Image, Animated, Easing } from 'react-native';
+import { View, Image, Animated, Easing } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import Background from '../components/Background';
 import CustomConfettiCannon from '../components/ConfettiCannon';
 import CpsButtonBig from '../components/CpsButtonBig';
 import PhoneFrame from '../components/PhoneFrame';
@@ -110,7 +111,7 @@ export default function FinalScreen({ route, navigation }: Props) {
   return (
     <PhoneFrame>
       <View className="w-full h-full max-h-screen">
-      <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
+      <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full items-center justify-center">
           <Animated.View
             style={[
@@ -150,7 +151,7 @@ export default function FinalScreen({ route, navigation }: Props) {
           </Animated.View>
         </View>
         {showConfetti && <CustomConfettiCannon />}
-      </ImageBackground>
+      </Background>
     </View>
     </PhoneFrame>
   );

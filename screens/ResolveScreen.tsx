@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import Background from '../components/Background';
 import CountDown from '../components/CountDown';
 import CpsButtonBig from '../components/CpsButtonBig';
 import PhoneFrame from '../components/PhoneFrame';
@@ -12,7 +13,7 @@ import { advanceMode, isGameOver, didPlayerWin } from '../lib/gameLogic';
 import type { RootStackParamList } from '../types';
 
 import Logo from '../assets/images/cps-logo.png';
-import Background from '../assets/images/red-background-33_9-16.png';
+import RedBackground from '../assets/images/red-background-33_9-16.png';
 import Pattern from '../assets/images/gray-pattern.png';
 import redX from '../assets/images/x-small-white-border.png';
 import greenTick from '../assets/images/tick-small-white-border.png';
@@ -85,9 +86,9 @@ export default function ResolveScreen({ route, navigation }: Props) {
   return (
     <PhoneFrame>
       <View className="w-full h-full max-h-screen">
-      <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
+      <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-1/3 flex justify-end items-center">
-          <ImageBackground className="w-full h-full" source={Background} />
+          <Background className="w-full h-full" source={RedBackground} />
         </View>
         <View className="w-full h-full absolute">
           <View className="w-full h-[73%]">
@@ -169,7 +170,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
             </View>
           </View>
         )}
-      </ImageBackground>
+      </Background>
     </View>
     </PhoneFrame>
   );

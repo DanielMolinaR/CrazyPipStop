@@ -20,7 +20,10 @@ interface PhoneFrameProps {
 export default function PhoneFrame({ children }: PhoneFrameProps) {
   return (
     <View className="w-full h-full bg-cps-gray items-center">
-      <View className="w-full h-full" style={{ maxWidth: PHONE_MAX_WIDTH }}>
+      <View
+        className="w-full h-full"
+        style={{ maxWidth: PHONE_MAX_WIDTH, overflow: 'hidden' }}
+      >
         {children}
       </View>
     </View>
