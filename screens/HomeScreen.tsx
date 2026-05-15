@@ -1,26 +1,29 @@
 import * as React from 'react';
-import { View, Image, ImageBackground, Pressable } from 'react-native';
+import { View, Image, Pressable } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import Background from '../components/Background';
 import CpsButtonBig from '../components/CpsButtonBig';
+import PhoneFrame from '../components/PhoneFrame';
 import StyledText from '../components/StyledText';
 import { cloneGameMode } from '../lib/gameLogic';
 import { gameModes } from '../lib/gameModes';
 import type { RootStackParamList } from '../types';
 
 import Logo from '../assets/images/cps-logo.png';
-import Background from '../assets/images/red-background-9-16.png';
+import RedBackground from '../assets/images/red-background-9-16.png';
 import Pattern from '../assets/images/gray-pattern.png';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   return (
-    <View className="w-full h-full max-h-max bg-gray-pattern">
-      <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
-        <ImageBackground
+    <PhoneFrame>
+      <View className="w-full h-full max-h-max bg-gray-pattern">
+        <Background className="w-full h-full" source={Pattern} resizeMode="stretch">
+        <Background
           className="w-full h-full pt-4"
-          source={Background}
+          source={RedBackground}
           resizeMode="stretch"
         >
           <View className="w-full h-[25%] items-center">
@@ -45,8 +48,9 @@ export default function HomeScreen({ navigation }: Props) {
               ))}
             </View>
           </View>
-        </ImageBackground>
-      </ImageBackground>
+        </Background>
+      </Background>
     </View>
+    </PhoneFrame>
   );
 }

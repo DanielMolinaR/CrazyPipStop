@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { View, ImageBackground, Image, Animated, Easing } from 'react-native';
+import { View, Image, Animated, Easing } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import CpsButtonBig from '../components/CpsButtonBig';
-import StyledText from '../components/StyledText';
+import Background from '../components/Background';
 import CustomConfettiCannon from '../components/ConfettiCannon';
+import CpsButtonBig from '../components/CpsButtonBig';
+import PhoneFrame from '../components/PhoneFrame';
+import StyledText from '../components/StyledText';
 import type { RootStackParamList } from '../types';
 
 import Pattern from '../assets/images/gray-pattern.png';
@@ -103,8 +105,9 @@ export default function FinalScreen({ route, navigation }: Props) {
   }, [navigation]);
 
   return (
-    <View className="w-full h-full max-h-screen">
-      <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
+    <PhoneFrame>
+      <View className="w-full h-full max-h-screen">
+      <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full items-center justify-center">
           <Animated.View
             style={[
@@ -144,7 +147,8 @@ export default function FinalScreen({ route, navigation }: Props) {
           </Animated.View>
         </View>
         {showConfetti && <CustomConfettiCannon />}
-      </ImageBackground>
+      </Background>
     </View>
+    </PhoneFrame>
   );
 }
