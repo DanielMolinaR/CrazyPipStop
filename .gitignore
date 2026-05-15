@@ -15,3 +15,9 @@ web-build/
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
+
+# Local reference screenshots for the iPad layout fix and similar future
+# task-scoped reference material. Keep them out of the repo so they don't
+# permanently pile up under version control.
+iPad/
+expectaction/

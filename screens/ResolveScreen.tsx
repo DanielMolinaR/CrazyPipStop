@@ -3,10 +3,11 @@ import { View, Image, ImageBackground, Pressable } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import CpsButtonBig from '../components/CpsButtonBig';
-import StyledText from '../components/StyledText';
 import CountDown from '../components/CountDown';
+import CpsButtonBig from '../components/CpsButtonBig';
+import PhoneFrame from '../components/PhoneFrame';
 import Scoreboard from '../components/Scoreboard';
+import StyledText from '../components/StyledText';
 import { advanceMode, isGameOver, didPlayerWin } from '../lib/gameLogic';
 import type { RootStackParamList } from '../types';
 
@@ -52,6 +53,11 @@ export default function ResolveScreen({ route, navigation }: Props) {
   // the audio cue alongside the visual lead-in delay.
   const playAudio = () => {
     if (audioSource) {
+      // Temporary diagnostic — confirms via Xcode device console that the
+      // player fires at all (helps diagnose if iPad audio is still dead
+      // after the silent-switch fix). Strip in a follow-up once
+      // confirmed working.
+      if (__DEV__) console.log('[Resolve] playAudio firing');
       player.play();
     }
   };
@@ -77,7 +83,8 @@ export default function ResolveScreen({ route, navigation }: Props) {
   };
 
   return (
-    <View className="w-full h-full max-h-screen">
+    <PhoneFrame>
+      <View className="w-full h-full max-h-screen">
       <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-1/3 flex justify-end items-center">
           <ImageBackground className="w-full h-full" source={Background} />
@@ -164,5 +171,6 @@ export default function ResolveScreen({ route, navigation }: Props) {
         )}
       </ImageBackground>
     </View>
+    </PhoneFrame>
   );
 }

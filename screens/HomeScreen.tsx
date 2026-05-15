@@ -3,6 +3,7 @@ import { View, Image, ImageBackground, Pressable } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import CpsButtonBig from '../components/CpsButtonBig';
+import PhoneFrame from '../components/PhoneFrame';
 import StyledText from '../components/StyledText';
 import { cloneGameMode } from '../lib/gameLogic';
 import { gameModes } from '../lib/gameModes';
@@ -16,8 +17,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   return (
-    <View className="w-full h-full max-h-max bg-gray-pattern">
-      <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
+    <PhoneFrame>
+      <View className="w-full h-full max-h-max bg-gray-pattern">
+        <ImageBackground className="w-full h-full" source={Pattern} resizeMode="stretch">
         <ImageBackground
           className="w-full h-full pt-4"
           source={Background}
@@ -48,5 +50,6 @@ export default function HomeScreen({ navigation }: Props) {
         </ImageBackground>
       </ImageBackground>
     </View>
+    </PhoneFrame>
   );
 }

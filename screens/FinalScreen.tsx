@@ -3,9 +3,10 @@ import { View, ImageBackground, Image, Animated, Easing } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import CpsButtonBig from '../components/CpsButtonBig';
-import StyledText from '../components/StyledText';
 import CustomConfettiCannon from '../components/ConfettiCannon';
+import CpsButtonBig from '../components/CpsButtonBig';
+import PhoneFrame from '../components/PhoneFrame';
+import StyledText from '../components/StyledText';
 import type { RootStackParamList } from '../types';
 
 import Pattern from '../assets/images/gray-pattern.png';
@@ -75,6 +76,10 @@ export default function FinalScreen({ route, navigation }: Props) {
   // Start the outcome audio once on mount.
   React.useEffect(() => {
     if (audioSource) {
+      // Temporary diagnostic — confirms via Xcode device console that the
+      // player fires at all (helps diagnose if iPad audio is still dead
+      // after the silent-switch fix). Strip in a follow-up once confirmed.
+      if (__DEV__) console.log('[Final] playing outcome audio');
       player.play();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,7 +108,8 @@ export default function FinalScreen({ route, navigation }: Props) {
   }, [navigation]);
 
   return (
-    <View className="w-full h-full max-h-screen">
+    <PhoneFrame>
+      <View className="w-full h-full max-h-screen">
       <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full items-center justify-center">
           <Animated.View
@@ -146,5 +152,6 @@ export default function FinalScreen({ route, navigation }: Props) {
         {showConfetti && <CustomConfettiCannon />}
       </ImageBackground>
     </View>
+    </PhoneFrame>
   );
 }

@@ -3,9 +3,10 @@ import { View, Image, ImageBackground, Pressable } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import CpsButtonBig from '../components/CpsButtonBig';
-import StyledText from '../components/StyledText';
-import Scoreboard from '../components/Scoreboard';
 import HomeButton from '../components/HomeButton';
+import PhoneFrame from '../components/PhoneFrame';
+import Scoreboard from '../components/Scoreboard';
+import StyledText from '../components/StyledText';
 import type { RootStackParamList } from '../types';
 
 import Logo from '../assets/images/cps-logo.png';
@@ -108,7 +109,8 @@ export default function GameScreen({ route, navigation }: Props) {
   };
 
   return (
-    <View className="w-full h-full max-h-screen">
+    <PhoneFrame>
+      <View className="w-full h-full max-h-screen">
       <ImageBackground className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="h-3/4">
           <ImageBackground className="w-full h-full" source={Background} />
@@ -151,5 +153,6 @@ export default function GameScreen({ route, navigation }: Props) {
         </View>
       </ImageBackground>
     </View>
+    </PhoneFrame>
   );
 }

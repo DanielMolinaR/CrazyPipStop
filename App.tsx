@@ -8,11 +8,13 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset';
 import { Image } from 'expo-image';
+import { setAudioModeAsync } from 'expo-audio';
 
 import HomeScreen from './screens/HomeScreen';
 import GameScreen from './screens/GameScreen';
 import ResolveScreen from './screens/ResolveScreen';
 import FinalScreen from './screens/FinalScreen';
+import PhoneFrame from './components/PhoneFrame';
 import type { RootStackParamList } from './types';
 
 // Keep the native splash visible until we explicitly hide it. The intro
@@ -73,6 +75,10 @@ const styles = StyleSheet.create({
     zIndex: 100,
     elevation: 100,
   },
+  introContent: {
+    flex: 1,
+    width: '100%',
+  },
   introLogoSlot: {
     width: '100%',
     height: '25%',
@@ -131,6 +137,15 @@ export default function App() {
     SplashScreen.hideAsync().catch(() => {});
   }, []);
 
+  // Configure the audio session once at boot so playback survives the iOS
+  // hardware silent switch / iPad mute slider. expo-audio defaults to
+  // respecting silent mode, which appears to have broken playback on the
+  // iPad. Non-fatal on failure — worst case, audio still respects silent
+  // mode (status quo).
+  React.useEffect(() => {
+    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+  }, []);
+
   const introComplete = fontsLoaded && assetsLoaded && minTimeElapsed;
 
   return (
@@ -152,18 +167,22 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
       {!introComplete && (
-        <ImageBackground
-          source={introBackground}
-          style={styles.introOverlay}
-          resizeMode="stretch"
-        >
-          <View style={styles.introLogoSlot}>
-            <Image source={introLogo} style={styles.introLogo} contentFit="contain" />
-          </View>
-          <View style={styles.introGifSlot}>
-            <Image source={introGif} style={styles.introGif} contentFit="contain" />
-          </View>
-        </ImageBackground>
+        <View style={styles.introOverlay}>
+          <PhoneFrame>
+            <ImageBackground
+              source={introBackground}
+              style={styles.introContent}
+              resizeMode="stretch"
+            >
+              <View style={styles.introLogoSlot}>
+                <Image source={introLogo} style={styles.introLogo} contentFit="contain" />
+              </View>
+              <View style={styles.introGifSlot}>
+                <Image source={introGif} style={styles.introGif} contentFit="contain" />
+              </View>
+            </ImageBackground>
+          </PhoneFrame>
+        </View>
       )}
     </View>
   );
