@@ -118,16 +118,15 @@ export default function FinalScreen({ route, navigation }: Props) {
           >
             <CpsButtonBig>
               <View className="w-full bg-cps-yellow">
-                {/* Screw is anchored to the left border via `justify-start`
-                    (DEFEAT) or `justify-between` (VICTORY, where the
-                    second screw lands at the right border with the text
-                    spread between them). `pl-3 pr-3` keeps the screws
-                    a hair off the very edge. */}
-                <View
-                  className={`w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 ${
-                    userHasWon ? 'justify-between' : 'justify-start'
-                  }`}
-                >
+                {/* `justify-start` for both cases — DEFEAT gets just the
+                    screw + text, VICTORY gets screw + text + screw, all
+                    flowing left-to-right with content sizing. Using
+                    `justify-between` for VICTORY would tell Yoga to
+                    spread the items to fill available space, which on
+                    iPad (no horizontal constraint above) expanded the
+                    badge to the full screen width. `pl-3 pr-3` keeps
+                    the screws a hair off the very edge. */}
+                <View className="w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 justify-start">
                   <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
                   <View className="rounded-md -mt-2">
                     {userHasWon ? (
