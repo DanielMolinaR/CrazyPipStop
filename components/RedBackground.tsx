@@ -25,9 +25,9 @@ const NOTCH_OUTLINE = '#000000';
 
 const STRIPE_THICKNESS = 1.0; // viewBox units (= % of height)
 const DEFAULT_STRIPE_COUNT = 18;
-const NOTCH_OUTLINE_WIDTH = 1.0; // viewBox units; vectorEffect keeps
-                                  // it a fixed pixel width regardless
-                                  // of the stretched aspect ratio.
+const NOTCH_OUTLINE_WIDTH = 1.75; // viewBox units; vectorEffect keeps
+                                   // it a fixed pixel width regardless
+                                   // of the stretched aspect ratio.
 
 interface RedBackgroundProps {
   chevronStart: number;
@@ -84,7 +84,15 @@ export default function RedBackground({
       <G clipPath="url(#redBgNotch)">
         <Rect x="0" y="0" width="100" height="100" fill={RED_BASE} />
         {stripes.map((y, i) => (
-          <Polygon key={i} points={stripePoints(y)} fill={RED_STRIPE} />
+          // fillOpacity ramps from 1/stripeCount (top, barely visible)
+          // to 1 (bottom, full) so the chevron pattern fades in rather
+          // than cutting in sharply at chevronStart.
+          <Polygon
+            key={i}
+            points={stripePoints(y)}
+            fill={RED_STRIPE}
+            fillOpacity={(i + 1) / stripeCount}
+          />
         ))}
       </G>
       {/* Black outline traces the two edges of the V-notch. Drawn on
