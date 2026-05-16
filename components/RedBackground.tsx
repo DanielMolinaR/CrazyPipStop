@@ -25,17 +25,18 @@ const NOTCH_OUTLINE = '#000000';
 
 const STRIPE_THICKNESS = 1.0; // viewBox units (= % of height)
 const DEFAULT_STRIPE_COUNT = 18;
-const NOTCH_OUTLINE_WIDTH = 1.75; // viewBox units; vectorEffect keeps
-                                   // it a fixed pixel width regardless
-                                   // of the stretched aspect ratio.
+const NOTCH_OUTLINE_WIDTH = 2.5; // viewBox units; vectorEffect keeps
+                                  // it a fixed pixel width regardless
+                                  // of the stretched aspect ratio.
 
 interface RedBackgroundProps {
   chevronStart: number;
   vDepth: number;
   // Vertical rise (in viewBox units) of each stripe's centre apex
   // above its edges — the angle that makes the stripes chevron
-  // inward, mirroring the bottom V-notch. Defaults to half the
-  // notch depth so the stripe slope echoes the notch slope.
+  // inward, mirroring the bottom V-notch. Defaults to vDepth*100 so
+  // the stripe slope exactly matches the notch slope (both rise
+  // vDepth*100 over a horizontal half-width of 50 viewBox units).
   chevronRise?: number;
   stripeCount?: number;
 }
@@ -43,7 +44,7 @@ interface RedBackgroundProps {
 export default function RedBackground({
   chevronStart,
   vDepth,
-  chevronRise = vDepth * 50,
+  chevronRise = vDepth * 100,
   stripeCount = DEFAULT_STRIPE_COUNT,
 }: RedBackgroundProps) {
   // The bottom edge of the red region is the V-notch: it dips up to
