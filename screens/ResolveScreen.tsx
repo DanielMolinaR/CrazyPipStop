@@ -87,8 +87,23 @@ export default function ResolveScreen({ route, navigation }: Props) {
   return (
     <View className="w-full h-full max-h-screen">
       <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
-        <View className="w-full h-1/3 flex justify-end items-center">
-          <RedBackground chevronStart={0.4} vDepth={0.06} stripeCount={26} />
+        {/* The red region only occupies the top 1/3 of the screen,
+            but we render the RedBackground SVG at 3× height anchored
+            upward and clip the overflow — so the stripes/notch are
+            sized like Home's design with the top cropped off, rather
+            than being squashed into a third of the area. */}
+        <View className="w-full h-1/3 flex justify-end items-center overflow-hidden">
+          <View
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: '-200%',
+              height: '300%',
+            }}
+          >
+            <RedBackground chevronStart={0.4} vDepth={0.06} stripeCount={26} />
+          </View>
         </View>
         <View className="w-full h-full absolute">
           <View className="w-full h-[73%]">
