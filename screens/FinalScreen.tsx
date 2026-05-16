@@ -14,7 +14,7 @@ import type { RootStackParamList } from '../types';
 // on the inner row expands the badge to roughly the screen width on
 // iPad. DEFEAT is content-sized via `justify-start`, so the cap is a
 // no-op for it (smaller than 480 either way).
-const TABLET_BADGE_MAX_WIDTH = 480;
+const TABLET_BADGE_MAX_WIDTH = 520;
 
 import Pattern from '../assets/images/gray-pattern.png';
 import Screw from '../assets/images/screw.png';
