@@ -154,7 +154,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
             maxVictoryPoints={gameMode.maxVictoryPoints}
             losingPoints={gameMode.losingPoints}
             maxLosePoints={gameMode.maxLosePoints}
-            victoryFontSize={26}
+            victoryFontSize={24}
           />
         </View>
         {showAppOptions && (

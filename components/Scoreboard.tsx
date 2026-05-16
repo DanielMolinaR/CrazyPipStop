@@ -30,7 +30,7 @@ export default function Scoreboard({
   maxVictoryPoints,
   losingPoints,
   maxLosePoints,
-  victoryFontSize = 24,
+  victoryFontSize = 22,
 }: ScoreboardProps) {
   const wrap = maxLosePoints < 5 ? '' : 'flex-wrap';
   const isTablet = useIsTablet();
