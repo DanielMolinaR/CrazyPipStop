@@ -19,9 +19,11 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 // `transformOrigin` is supported on both iOS and Android since RN 0.74,
 // but the public TypeScript style types haven't caught up. The cast is
 // purely to satisfy the compiler — it does nothing at runtime.
-// Pivot is set to roughly where the screw image sits on the badge so the
-// defeat animation hinges on it instead of swinging around the centre.
-const transformOriginStyle = { transformOrigin: '25% 50%' } as unknown as object;
+// Pivot is set to roughly where the screw image sits on the badge so
+// the defeat animation hinges on it instead of swinging around the
+// centre. Tuned to land near the screw centre after the row's
+// `justify-center` + the `gap-x-3` spacing between screw and text.
+const transformOriginStyle = { transformOrigin: '20% 50%' } as unknown as object;
 
 async function navigateHomeAfterDelay(navigation: Props['navigation']) {
   await sleep(1000);
@@ -117,7 +119,7 @@ export default function FinalScreen({ route, navigation }: Props) {
           >
             <CpsButtonBig>
               <View className="w-full bg-cps-yellow">
-                <View className="w-full basis-[15%] flex-row items-center justify-center">
+                <View className="w-full basis-[15%] flex-row gap-x-3 items-center justify-center">
                   <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
                   {userHasWon ? (
                     <View className="rounded-md -mt-2">

@@ -14,9 +14,13 @@ import type { RootStackParamList } from '../types';
 import Logo from '../assets/images/cps-logo.png';
 import Pattern from '../assets/images/gray-pattern.png';
 
-// Cap the START button width on tablets — without this, w-3/5 on iPad
-// would stretch it across two-thirds of an 820pt screen. No-op on phone.
-const TABLET_BUTTON_MAX_WIDTH = 400;
+// Tablet caps for the various button shapes on this screen — without
+// these, percentage widths stretch on iPad and the buttons look way
+// wider than their content intends. All no-ops on phone (the phone
+// screen is narrower than every cap below).
+const TABLET_START_MAX_WIDTH = 360;     // green START
+const TABLET_TIMER_MAX_WIDTH = 280;     // brown main timer (40", 25", …)
+const TABLET_SMALL_BTN_MAX_WIDTH = 180; // -5" toggle + penalty preview
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Game'>;
 
@@ -25,7 +29,9 @@ export default function GameScreen({ route, navigation }: Props) {
   const [isPenalized, setIsPenalized] = React.useState<boolean>(gameMode.isPenalized);
   const { isPenalizationUsed } = gameMode;
   const isTablet = useIsTablet();
-  const startButtonStyle = isTablet ? { maxWidth: TABLET_BUTTON_MAX_WIDTH } : undefined;
+  const startButtonStyle = isTablet ? { maxWidth: TABLET_START_MAX_WIDTH } : undefined;
+  const timerStyle = isTablet ? { maxWidth: TABLET_TIMER_MAX_WIDTH } : undefined;
+  const smallBtnStyle = isTablet ? { maxWidth: TABLET_SMALL_BTN_MAX_WIDTH } : undefined;
 
   const onStart = () => {
     // Bake the user's penalization choice into the gameMode passed forward.
@@ -45,7 +51,7 @@ export default function GameScreen({ route, navigation }: Props) {
 
     if (isPenalizationUsed) {
       return (
-        <View className="w-[35%] z-10 opacity-25">
+        <View className="w-[35%] z-10 opacity-25" style={smallBtnStyle}>
           <CpsButtonBig>
             <View className={`w-full h-full ${bg} rounded-md justify-center`}>
               <StyledText
@@ -60,7 +66,11 @@ export default function GameScreen({ route, navigation }: Props) {
     }
 
     return (
-      <Pressable className="w-[35%] z-10" onPress={() => setIsPenalized(!isPenalized)}>
+      <Pressable
+        className="w-[35%] z-10"
+        style={smallBtnStyle}
+        onPress={() => setIsPenalized(!isPenalized)}
+      >
         <CpsButtonBig>
           <View className={`w-full h-full ${bg} rounded-md justify-center`}>
             <StyledText
@@ -80,7 +90,7 @@ export default function GameScreen({ route, navigation }: Props) {
     const bg = showPenaltyStyle ? 'bg-cps-deep-red' : 'bg-cps-brown';
     const textColor = showPenaltyStyle ? 'text-cps-red' : 'text-cps-yellow';
     return (
-      <View className="w-2/4 -mt-5 z-0">
+      <View className="w-2/4 -mt-5 z-0" style={timerStyle}>
         <CpsButtonBig>
           <View className={`flex w-full h-full ${bg} rounded-md items-center justify-center`}>
             <StyledText
@@ -101,7 +111,7 @@ export default function GameScreen({ route, navigation }: Props) {
     }
     const previewSeconds = gameMode.secondsCounter - gameMode.penalizationTime;
     return (
-      <View className="w-[35%] z-10 -mt-4">
+      <View className="w-[35%] z-10 -mt-4" style={smallBtnStyle}>
         <CpsButtonBig>
           <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
             <StyledText

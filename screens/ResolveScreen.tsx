@@ -16,9 +16,11 @@ import type { RootStackParamList } from '../types';
 import Logo from '../assets/images/cps-logo.png';
 import Pattern from '../assets/images/gray-pattern.png';
 
-// Cap interactive button widths on tablets so they don't stretch across
-// the wider iPad screen. No-op on phones.
-const TABLET_BUTTON_MAX_WIDTH = 400;
+// Tablet caps for the various button shapes on this screen — without
+// these, percentage widths stretch on iPad and the buttons look way
+// wider than their content intends. All no-ops on phone.
+const TABLET_ACTION_MAX_WIDTH = 360;  // STOP / OK?
+const TABLET_TIMER_MAX_WIDTH = 280;   // brown countdown displays
 import redX from '../assets/images/x-small-white-border.png';
 import greenTick from '../assets/images/tick-small-white-border.png';
 
@@ -32,7 +34,8 @@ export default function ResolveScreen({ route, navigation }: Props) {
     ? gameMode.secondsCounter - gameMode.penalizationTime
     : gameMode.secondsCounter;
   const isTablet = useIsTablet();
-  const buttonStyle = isTablet ? { maxWidth: TABLET_BUTTON_MAX_WIDTH } : undefined;
+  const actionStyle = isTablet ? { maxWidth: TABLET_ACTION_MAX_WIDTH } : undefined;
+  const timerStyle = isTablet ? { maxWidth: TABLET_TIMER_MAX_WIDTH } : undefined;
 
   // Pick the countdown audio track once per mount so the source passed to
   // useAudioPlayer is stable for the life of this screen. Penalized vs.
@@ -111,7 +114,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
               <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain" />
             </View>
             <View className="flex w-full h-[30%] items-center justify-center">
-              <View className="w-2/4 h-[65%] -mt-4">
+              <View className="w-2/4 h-[65%] -mt-4" style={timerStyle}>
                 <CpsButtonBig>
                   <View className="w-full h-full bg-cps-brown rounded-md items-center justify-center">
                     <StyledText
@@ -134,7 +137,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
               <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                 <Pressable
                   className="w-3/5 h-[90%] z-10"
-                  style={buttonStyle}
+                  style={actionStyle}
                   onPress={() => showOptionsAndHandleAudio(false)}
                 >
                   <CpsButtonBig>
@@ -159,7 +162,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
             <View className="w-full h-full bg-cps-gray opacity-75" />
             <View className="w-full h-full absolute">
               <View className="w-full h-1/2 items-center justify-center">
-                <View className="w-3/4 h-1/2" style={buttonStyle}>
+                <View className="w-3/4 h-1/2" style={actionStyle}>
                   <CpsButtonBig>
                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                       <StyledText fontSize={36} style="text-center font-black" text="OK?" />
