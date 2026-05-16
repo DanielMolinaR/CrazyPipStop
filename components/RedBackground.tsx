@@ -23,11 +23,15 @@ const RED_BASE = '#D2160F'; // cps-red — solid background
 const RED_STRIPE = '#E84840'; // lighter pinkish red — chevron stripes
 const NOTCH_OUTLINE = '#000000';
 
-const STRIPE_THICKNESS = 1.0; // viewBox units (= % of height)
 const DEFAULT_STRIPE_COUNT = 18;
-const NOTCH_OUTLINE_WIDTH = 2.5; // viewBox units; vectorEffect keeps
-                                  // it a fixed pixel width regardless
-                                  // of the stretched aspect ratio.
+// Both widths below are in viewBox units, but the elements that use
+// them render with `vectorEffect="non-scaling-stroke"` — that keeps
+// the stroke a fixed pixel width regardless of how large or small
+// the SVG container is on screen. So stripes don't get thinner on
+// the smaller red regions and the notch border doesn't get thinner
+// on the bigger ones.
+const STRIPE_STROKE_WIDTH = 6;
+const NOTCH_OUTLINE_WIDTH = 4;
 
 interface RedBackgroundProps {
   chevronStart: number;
@@ -56,20 +60,18 @@ export default function RedBackground({
 
   // Stripes span chevronStart -> just shy of the bottom; the clip
   // handles whatever portion falls inside the notch.
-  const stripeAreaHeight = 100 - chevronStart * 100 - STRIPE_THICKNESS;
+  const stripeAreaHeight = 100 - chevronStart * 100;
   const stripes = Array.from({ length: stripeCount }, (_, i) => {
     const t = i / Math.max(stripeCount - 1, 1);
     return chevronStart * 100 + stripeAreaHeight * t;
   });
 
-  // Build each stripe as a 6-point chevron band rather than a flat
-  // rectangle: top-left → top-centre apex (raised by chevronRise) →
-  // top-right → bottom-right → bottom-centre apex (same rise) →
-  // bottom-left. The stripes form the inward chevron pattern that
-  // echoes the V-notch shape.
-  const stripePoints = (y: number) =>
-    `0,${y} 50,${y - chevronRise} 100,${y} ` +
-    `100,${y + STRIPE_THICKNESS} 50,${y - chevronRise + STRIPE_THICKNESS} 0,${y + STRIPE_THICKNESS}`;
+  // Each stripe is a 3-point chevron polyline (the ^ shape) drawn as
+  // a stroke — left edge → centre apex (raised by chevronRise) →
+  // right edge. With vectorEffect="non-scaling-stroke" on the
+  // polyline, the rendered thickness stays a fixed pixel count even
+  // as the SVG stretches to fill containers of different sizes.
+  const stripePoints = (y: number) => `0,${y} 50,${y - chevronRise} 100,${y}`;
 
   return (
     <Svg
@@ -85,14 +87,17 @@ export default function RedBackground({
       <G clipPath="url(#redBgNotch)">
         <Rect x="0" y="0" width="100" height="100" fill={RED_BASE} />
         {stripes.map((y, i) => (
-          // fillOpacity ramps from 1/stripeCount (top, barely visible)
-          // to 1 (bottom, full) so the chevron pattern fades in rather
-          // than cutting in sharply at chevronStart.
-          <Polygon
+          // strokeOpacity ramps from 1/stripeCount (top, barely
+          // visible) to 1 (bottom, full) so the chevron pattern
+          // fades in rather than cutting in sharply at chevronStart.
+          <Polyline
             key={i}
             points={stripePoints(y)}
-            fill={RED_STRIPE}
-            fillOpacity={(i + 1) / stripeCount}
+            stroke={RED_STRIPE}
+            strokeWidth={STRIPE_STROKE_WIDTH}
+            strokeOpacity={(i + 1) / stripeCount}
+            fill="none"
+            vectorEffect="non-scaling-stroke"
           />
         ))}
       </G>
