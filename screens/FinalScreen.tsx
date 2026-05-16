@@ -7,7 +7,14 @@ import Background from '../components/Background';
 import CustomConfettiCannon from '../components/ConfettiCannon';
 import CpsButtonBig from '../components/CpsButtonBig';
 import StyledText from '../components/StyledText';
+import { useIsTablet } from '../hooks/useIsTablet';
 import type { RootStackParamList } from '../types';
+
+// Cap the VICTORY badge width on tablet — without this, `justify-center`
+// on the inner row expands the badge to roughly the screen width on
+// iPad. DEFEAT is content-sized via `justify-start`, so the cap is a
+// no-op for it (smaller than 480 either way).
+const TABLET_BADGE_MAX_WIDTH = 480;
 
 import Pattern from '../assets/images/gray-pattern.png';
 import Screw from '../assets/images/screw.png';
@@ -36,6 +43,8 @@ export default function FinalScreen({ route, navigation }: Props) {
 
   const [showConfetti] = React.useState<boolean>(userHasWon);
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
+  const isTablet = useIsTablet();
+  const badgeStyle = isTablet ? { maxWidth: TABLET_BADGE_MAX_WIDTH } : undefined;
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -111,6 +120,7 @@ export default function FinalScreen({ route, navigation }: Props) {
           <Animated.View
             style={[
               transformOriginStyle,
+              badgeStyle,
               {
                 transform: [{ rotate: spin }],
               },
