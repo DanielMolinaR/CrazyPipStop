@@ -148,7 +148,58 @@ consistent depth/bezel:
 
 Typography goes through `<StyledText>`, which wraps RN's `Text` with a
 custom Acumin font lookup and screen-width-based scaling (baseline:
-iPhone-5s 320pt width).
+iPhone-5s 320pt width). The scale is **clamped** to 480pt on phone and
+600pt on tablet (via `useIsTablet()` — see below) so text doesn't
+balloon on iPad while still growing proportionately.
+
+### Tablet breakpoints
+
+iPad is a first-class layout, not a centred phone window. The
+`useIsTablet()` hook (`hooks/useIsTablet.ts`) returns `true` when the
+device's smallest dimension is ≥ 600pt — catches every iPad
+(mini ≈ 744pt → Pro 12.9" ≈ 1024pt), excludes every phone (iPhone 16
+Pro Max smallest = 440pt). It's reactive via `useWindowDimensions()`.
+
+When the hook returns true:
+
+- `<StyledText>` raises its scale cap from 480pt to 600pt.
+- Each screen caps the maxWidth of its action buttons (START, STOP,
+  OK?, timer displays, etc.) so they don't stretch across the wider
+  screen. The tunable values live as `TABLET_*_MAX_WIDTH` constants at
+  the top of each screen file.
+- `<Scoreboard>` wraps its rows in a 480pt-wide centred container so
+  the score circles + mistake squares stay phone-sized rather than
+  inflating to ~15% of the iPad's width.
+- `<FinalScreen>` caps the VICTORY/DEFEAT badge at 520pt and switches
+  the DEFEAT layout to `justify-start` so the screw stays anchored at
+  the left border (the rotation pivot hinges on it).
+
+Phone behaviour is the default; every tablet adjustment is a no-op
+there (the cap values are wider than any phone, and the layout
+strategy doesn't change).
+
+### Background images
+
+The gray pattern is rendered via `<Background>` (`components/Background.tsx`)
+— a drop-in `<ImageBackground>` replacement that uses expo-image's
+`<Image>` with `cachePolicy="memory-disk"`. The decoded bitmap stays in
+memory across React Navigation mount/unmount cycles, which matters
+because every forward navigation mounts a fresh screen. The asset
+itself is also downscaled (`gray-pattern.png` is 833×1537, not the
+original 3334×6151) so the first decode is cheap too.
+
+The red chevron background is **not** a PNG — it's drawn programmatically
+in SVG by `<RedBackground>` (`components/RedBackground.tsx`, backed by
+`react-native-svg`). Renders into the parent via absolute-fill, scales
+to any aspect ratio without distortion. Two screen-tunable props:
+
+- `chevronStart` (0–1): where the horizontal stripes begin from the top.
+- `vDepth` (0–1): how deep the V-notch is cut into the bottom edge.
+- Optional `chevronRise` and `stripeCount` for finer tuning.
+
+`ResolveScreen` wraps it in an oversized parent with `overflow: hidden`
+so the SVG renders at the same pixel size as Home's but with the top
+cropped — the "same chevron, moved upward" feel.
 
 ## Audio system
 
@@ -174,6 +225,11 @@ The **CountDown component** runs a 5.2-second lead-in delay between
 audio files have "3, 2, 1, GO!" baked into their last few seconds, and
 the lead-in aligns the audio "GO!" with the visible `secondsCounter`.
 
+`App.tsx` calls `setAudioModeAsync({ playsInSilentMode: true })` once on
+mount so the countdown / outcome audio survives the iOS hardware silent
+switch and the iPad mute slider — by default expo-audio respects silent
+mode and the cues would be inaudible whenever the device is muted.
+
 ## Project structure
 
 ```
@@ -188,6 +244,8 @@ tailwind.config.js       Custom CPS palette + nativewind/preset
 eslint.config.js         Flat config extending eslint-config-expo
 .prettierrc.json         Style: single quotes, semis, 100 cols
 tsconfig.json            Extends expo/tsconfig.base, strict mode
+hooks/
+  useIsTablet.ts         Tablet detection — useWindowDimensions, threshold 600pt
 lib/
   gameLogic.ts           Pure functions: advanceMode, isGameOver, didPlayerWin, cloneGameMode
   gameModes.ts           The four GameMode templates + their audio require()s
@@ -201,7 +259,9 @@ components/
   CpsButtonBig.tsx       Triple-nested-border wrapper for large buttons
   CpsButtonSmall.tsx     Same, smaller
   CpsRoundButton.tsx     Same, round
-  StyledText.tsx         Custom Acumin font wrapper with screen-size scaling
+  StyledText.tsx         Custom Acumin font wrapper with tablet-aware scaling
+  Background.tsx         <ImageBackground> replacement backed by expo-image cache
+  RedBackground.tsx      SVG chevron + V-notch (replaces the old red-bg PNGs)
   ConfettiCannon.tsx     Victory confetti overlay
   CountDown.tsx          Audio-synced countdown with background-time handling
   Scoreboard.tsx         Victory/mistake-points row (shared by Game & Resolve)
@@ -215,7 +275,7 @@ eas.json                 EAS build/submit profiles (development, preview, produc
 app.json                 Expo app config (icon, splash, plugins)
 assets/
   fonts/                 Acumin variable font
-  images/                Logo, backgrounds, icons, intro GIF
+  images/                Logo, icons, intro GIF, gray pattern (red bg is SVG)
   music/                 Countdown/victory/defeat audio tracks
 ```
 
@@ -238,14 +298,22 @@ assets/
 - **NativeWind class first, inline `style` only for what NativeWind
   can't express.** Examples that warrant inline style: `transformOrigin`
   on iOS (not in the public RN types), explicit `zIndex` on absolute
-  overlays (NativeWind's `z-*` is unreliable on Android in RN).
+  overlays (NativeWind's `z-*` is unreliable on Android in RN),
+  per-screen tablet `maxWidth` caps where the value is a named constant.
+- **Use `useIsTablet()` for tablet-aware tweaks.** When a value visibly
+  needs to differ on iPad vs phone (button widths, font caps, layout
+  strategy), branch via the hook and surface the tablet value as a
+  named constant at the top of the file rather than burying it in JSX.
+  Phone is the default — tablet adjustments should be no-ops on phone.
 - **Run `npx tsc --noEmit && npm test && npm run lint` before
   committing.** That's the canonical "is the codebase healthy" gate.
 
 ## Build and release pipeline
 
-`.github/workflows/release.yml` runs on push to the trunk branch (and on
-manual `workflow_dispatch`):
+`.github/workflows/release.yml` runs on every PR merge into the trunk
+branch (`pull_request: closed` + `if: merged == true`, so a PR closed
+without merging skips the build), plus manual `workflow_dispatch`.
+Direct pushes to `main` (rare, admin-only) do not auto-fire a release.
 
 1. **Verify**: `npx tsc --noEmit`, `npm test -- --ci`, `npm run lint`.
    A failure in any of these blocks the release.
