@@ -88,7 +88,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
     <View className="w-full h-full max-h-screen">
       <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-1/3 flex justify-end items-center">
-          <RedBackground chevronStart={0.0} vDepth={0.10} />
+          <RedBackground chevronStart={0.4} vDepth={0.06} stripeCount={26} />
         </View>
         <View className="w-full h-full absolute">
           <View className="w-full h-[73%]">

@@ -29,7 +29,7 @@ export default function HomeScreen({ navigation }: Props) {
     <View className="w-full h-full max-h-max bg-gray-pattern">
       <Background className="w-full h-full" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full pt-4">
-          <RedBackground chevronStart={0.4} vDepth={0.06} />
+          <RedBackground chevronStart={0.4} vDepth={0.06} stripeCount={26} />
           <View className="w-full h-[25%] items-center">
             <Image className="w-5/6 h-5/6" source={Logo} resizeMode="contain" />
           </View>
