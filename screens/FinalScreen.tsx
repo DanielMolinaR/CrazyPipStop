@@ -6,7 +6,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Background from '../components/Background';
 import CustomConfettiCannon from '../components/ConfettiCannon';
 import CpsButtonBig from '../components/CpsButtonBig';
-import PhoneFrame from '../components/PhoneFrame';
 import StyledText from '../components/StyledText';
 import type { RootStackParamList } from '../types';
 
@@ -105,8 +104,7 @@ export default function FinalScreen({ route, navigation }: Props) {
   }, [navigation]);
 
   return (
-    <PhoneFrame>
-      <View className="w-full h-full max-h-screen">
+    <View className="w-full h-full max-h-screen">
       <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full items-center justify-center">
           <Animated.View
@@ -149,6 +147,5 @@ export default function FinalScreen({ route, navigation }: Props) {
         {showConfetti && <CustomConfettiCannon />}
       </Background>
     </View>
-    </PhoneFrame>
   );
 }

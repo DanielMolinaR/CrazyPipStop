@@ -6,15 +6,19 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Background from '../components/Background';
 import CountDown from '../components/CountDown';
 import CpsButtonBig from '../components/CpsButtonBig';
-import PhoneFrame from '../components/PhoneFrame';
+import RedBackground from '../components/RedBackground';
 import Scoreboard from '../components/Scoreboard';
 import StyledText from '../components/StyledText';
+import { useIsTablet } from '../hooks/useIsTablet';
 import { advanceMode, isGameOver, didPlayerWin } from '../lib/gameLogic';
 import type { RootStackParamList } from '../types';
 
 import Logo from '../assets/images/cps-logo.png';
-import RedBackground from '../assets/images/red-background-33_9-16.png';
 import Pattern from '../assets/images/gray-pattern.png';
+
+// Cap interactive button widths on tablets so they don't stretch across
+// the wider iPad screen. No-op on phones.
+const TABLET_BUTTON_MAX_WIDTH = 400;
 import redX from '../assets/images/x-small-white-border.png';
 import greenTick from '../assets/images/tick-small-white-border.png';
 
@@ -27,6 +31,8 @@ export default function ResolveScreen({ route, navigation }: Props) {
   const time = gameMode.isPenalized
     ? gameMode.secondsCounter - gameMode.penalizationTime
     : gameMode.secondsCounter;
+  const isTablet = useIsTablet();
+  const buttonStyle = isTablet ? { maxWidth: TABLET_BUTTON_MAX_WIDTH } : undefined;
 
   // Pick the countdown audio track once per mount so the source passed to
   // useAudioPlayer is stable for the life of this screen. Penalized vs.
@@ -79,11 +85,10 @@ export default function ResolveScreen({ route, navigation }: Props) {
   };
 
   return (
-    <PhoneFrame>
-      <View className="w-full h-full max-h-screen">
+    <View className="w-full h-full max-h-screen">
       <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-1/3 flex justify-end items-center">
-          <Background className="w-full h-full" source={RedBackground} />
+          <RedBackground chevronStart={0.0} vDepth={0.10} />
         </View>
         <View className="w-full h-full absolute">
           <View className="w-full h-[73%]">
@@ -114,6 +119,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
               <View className="flex w-full h-[50%] items-center -mt-4 z-10">
                 <Pressable
                   className="w-3/5 h-[90%] z-10"
+                  style={buttonStyle}
                   onPress={() => showOptionsAndHandleAudio(false)}
                 >
                   <CpsButtonBig>
@@ -138,7 +144,7 @@ export default function ResolveScreen({ route, navigation }: Props) {
             <View className="w-full h-full bg-cps-gray opacity-75" />
             <View className="w-full h-full absolute">
               <View className="w-full h-1/2 items-center justify-center">
-                <View className="w-3/4 h-1/2">
+                <View className="w-3/4 h-1/2" style={buttonStyle}>
                   <CpsButtonBig>
                     <View className="w-full h-full bg-cps-yellow rounded-md items-center justify-center">
                       <StyledText fontSize={36} style="text-center font-black" text="OK?" />
@@ -167,6 +173,5 @@ export default function ResolveScreen({ route, navigation }: Props) {
         )}
       </Background>
     </View>
-    </PhoneFrame>
   );
 }
