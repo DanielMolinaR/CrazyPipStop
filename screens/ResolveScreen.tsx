@@ -20,7 +20,7 @@ import Pattern from '../assets/images/gray-pattern.png';
 // these, percentage widths stretch on iPad and the buttons look way
 // wider than their content intends. All no-ops on phone.
 const TABLET_ACTION_MAX_WIDTH = 360;  // STOP / OK?
-const TABLET_TIMER_MAX_WIDTH = 280;   // brown countdown displays
+const TABLET_TIMER_MAX_WIDTH = 240;   // brown countdown displays
 import redX from '../assets/images/x-small-white-border.png';
 import greenTick from '../assets/images/tick-small-white-border.png';
 

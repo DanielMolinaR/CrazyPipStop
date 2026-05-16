@@ -19,11 +19,10 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 // `transformOrigin` is supported on both iOS and Android since RN 0.74,
 // but the public TypeScript style types haven't caught up. The cast is
 // purely to satisfy the compiler — it does nothing at runtime.
-// Pivot is set to roughly where the screw image sits on the badge so
-// the defeat animation hinges on it instead of swinging around the
-// centre. Tuned to land near the screw centre after the row's
-// `justify-center` + the `gap-x-3` spacing between screw and text.
-const transformOriginStyle = { transformOrigin: '20% 50%' } as unknown as object;
+// Pivot lands near the centre of the left-anchored screw (the badge
+// row uses `justify-start` / `justify-between` with the screw at the
+// left border, padded by `pl-3`).
+const transformOriginStyle = { transformOrigin: '8% 50%' } as unknown as object;
 
 async function navigateHomeAfterDelay(navigation: Props['navigation']) {
   await sleep(1000);
@@ -119,27 +118,34 @@ export default function FinalScreen({ route, navigation }: Props) {
           >
             <CpsButtonBig>
               <View className="w-full bg-cps-yellow">
-                <View className="w-full basis-[15%] flex-row gap-x-3 items-center justify-center">
+                {/* Screw is anchored to the left border via `justify-start`
+                    (DEFEAT) or `justify-between` (VICTORY, where the
+                    second screw lands at the right border with the text
+                    spread between them). `pl-3 pr-3` keeps the screws
+                    a hair off the very edge. */}
+                <View
+                  className={`w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 ${
+                    userHasWon ? 'justify-between' : 'justify-start'
+                  }`}
+                >
                   <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
-                  {userHasWon ? (
-                    <View className="rounded-md -mt-2">
+                  <View className="rounded-md -mt-2">
+                    {userHasWon ? (
                       <StyledText
                         fontSize={36}
                         style="text-cps-green text-center font-black"
                         text="VICTORY!!"
                       />
-                    </View>
-                  ) : (
-                    <View className="rounded-md -mt-2">
+                    ) : (
                       <StyledText
                         fontSize={36}
                         style="text-cps-red text-center font-black"
                         text="DEFEAT"
                       />
-                    </View>
-                  )}
+                    )}
+                  </View>
                   {userHasWon && (
-                    <Image className="w-[10%]" source={Screw} resizeMode="contain" />
+                    <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
                   )}
                 </View>
               </View>
