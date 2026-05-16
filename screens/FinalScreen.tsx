@@ -6,9 +6,15 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Background from '../components/Background';
 import CustomConfettiCannon from '../components/ConfettiCannon';
 import CpsButtonBig from '../components/CpsButtonBig';
-import PhoneFrame from '../components/PhoneFrame';
 import StyledText from '../components/StyledText';
+import { useIsTablet } from '../hooks/useIsTablet';
 import type { RootStackParamList } from '../types';
+
+// Cap the VICTORY badge width on tablet — without this, `justify-center`
+// on the inner row expands the badge to roughly the screen width on
+// iPad. DEFEAT is content-sized via `justify-start`, so the cap is a
+// no-op for it (smaller than 480 either way).
+const TABLET_BADGE_MAX_WIDTH = 520;
 
 import Pattern from '../assets/images/gray-pattern.png';
 import Screw from '../assets/images/screw.png';
@@ -20,9 +26,10 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
 // `transformOrigin` is supported on both iOS and Android since RN 0.74,
 // but the public TypeScript style types haven't caught up. The cast is
 // purely to satisfy the compiler — it does nothing at runtime.
-// Pivot is set to roughly where the screw image sits on the badge so the
-// defeat animation hinges on it instead of swinging around the centre.
-const transformOriginStyle = { transformOrigin: '25% 50%' } as unknown as object;
+// Pivot lands near the centre of the left-anchored screw (the badge
+// row uses `justify-start` / `justify-between` with the screw at the
+// left border, padded by `pl-3`).
+const transformOriginStyle = { transformOrigin: '8% 50%' } as unknown as object;
 
 async function navigateHomeAfterDelay(navigation: Props['navigation']) {
   await sleep(1000);
@@ -36,6 +43,8 @@ export default function FinalScreen({ route, navigation }: Props) {
 
   const [showConfetti] = React.useState<boolean>(userHasWon);
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
+  const isTablet = useIsTablet();
+  const badgeStyle = isTablet ? { maxWidth: TABLET_BADGE_MAX_WIDTH } : undefined;
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -105,13 +114,13 @@ export default function FinalScreen({ route, navigation }: Props) {
   }, [navigation]);
 
   return (
-    <PhoneFrame>
-      <View className="w-full h-full max-h-screen">
+    <View className="w-full h-full max-h-screen">
       <Background className="w-full h-full relative" source={Pattern} resizeMode="stretch">
         <View className="w-full h-full items-center justify-center">
           <Animated.View
             style={[
               transformOriginStyle,
+              badgeStyle,
               {
                 transform: [{ rotate: spin }],
               },
@@ -119,27 +128,39 @@ export default function FinalScreen({ route, navigation }: Props) {
           >
             <CpsButtonBig>
               <View className="w-full bg-cps-yellow">
-                <View className="w-full basis-[15%] flex-row items-center justify-center">
+                {/* DEFEAT uses `justify-start` so the lone screw stays
+                    anchored at the left border (the rotation pivot
+                    hinges on it). VICTORY uses `justify-center` so the
+                    screw + text + screw group is centred within the
+                    badge — avoids the off-centre look that
+                    `justify-start` gave on iPad. `justify-between`
+                    isn't used because it tells Yoga to spread the
+                    items to fill available space, which on iPad
+                    expanded the badge to the full screen width.
+                    `pl-3 pr-3` keeps the screws a hair off the edge. */}
+                <View
+                  className={`w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 ${
+                    userHasWon ? 'justify-center' : 'justify-start'
+                  }`}
+                >
                   <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
-                  {userHasWon ? (
-                    <View className="rounded-md -mt-2">
+                  <View className="rounded-md -mt-2">
+                    {userHasWon ? (
                       <StyledText
                         fontSize={36}
                         style="text-cps-green text-center font-black"
                         text="VICTORY!!"
                       />
-                    </View>
-                  ) : (
-                    <View className="rounded-md -mt-2">
+                    ) : (
                       <StyledText
                         fontSize={36}
                         style="text-cps-red text-center font-black"
                         text="DEFEAT"
                       />
-                    </View>
-                  )}
+                    )}
+                  </View>
                   {userHasWon && (
-                    <Image className="w-[10%]" source={Screw} resizeMode="contain" />
+                    <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
                   )}
                 </View>
               </View>
@@ -149,6 +170,5 @@ export default function FinalScreen({ route, navigation }: Props) {
         {showConfetti && <CustomConfettiCannon />}
       </Background>
     </View>
-    </PhoneFrame>
   );
 }

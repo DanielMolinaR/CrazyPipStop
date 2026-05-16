@@ -1,23 +1,20 @@
 import * as React from 'react';
-import { Text, Dimensions, Platform, PixelRatio } from 'react-native';
+import { Text, Platform, PixelRatio, useWindowDimensions } from 'react-native';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { useIsTablet } from '../hooks/useIsTablet';
 
 // Based on iPhone 5s (320pt-wide) baseline; resulting size scales with the
-// device's screen width so layouts feel consistent across phone sizes.
+// device's screen width so layouts feel consistent across device sizes.
 //
-// Clamped to PHONE_MAX_WIDTH (480pt) — the same width PhoneFrame caps
-// content at — so on tablets the text inside the centered frame renders
-// at the same size as on the widest phone, instead of ballooning with
-// the iPad's actual screen width (820pt+).
+// The scale is clamped to a maximum width so text stays readable rather
+// than ballooning. The cap is higher on tablets — text needs more
+// presence on a larger screen — but still bounded so it doesn't run
+// away on the biggest iPad Pros.
+//
+//   phone cap  = 480 pt  (≈ widest phone; iPhone 16 Pro Max ≈ 440)
+//   tablet cap = 600 pt  (1.875× baseline — proportionate on iPad)
 const PHONE_MAX_WIDTH = 480;
-const SCALE = Math.min(SCREEN_WIDTH, PHONE_MAX_WIDTH) / 320;
-
-function normalize(size: number): number {
-  const scaled = size * SCALE;
-  const rounded = Math.round(PixelRatio.roundToNearestPixel(scaled));
-  return Platform.OS === 'ios' ? rounded : rounded - 2;
-}
+const TABLET_MAX_WIDTH = 600;
 
 interface StyledTextProps {
   text: string | number;
@@ -26,11 +23,17 @@ interface StyledTextProps {
 }
 
 export default function StyledText({ text, fontSize, style = '' }: StyledTextProps) {
+  const { width } = useWindowDimensions();
+  const cap = useIsTablet() ? TABLET_MAX_WIDTH : PHONE_MAX_WIDTH;
+  const scale = Math.min(width, cap) / 320;
+  const scaled = fontSize * scale;
+  const rounded = Math.round(PixelRatio.roundToNearestPixel(scaled));
+  const size = Platform.OS === 'ios' ? rounded : rounded - 2;
   return (
     <Text
       className={`text-[Acumin] ${style}`}
       allowFontScaling={false}
-      style={{ fontSize: normalize(fontSize) }}
+      style={{ fontSize: size }}
     >
       {text}
     </Text>

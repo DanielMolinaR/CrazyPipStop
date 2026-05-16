@@ -15,7 +15,6 @@ import GameScreen from './screens/GameScreen';
 import ResolveScreen from './screens/ResolveScreen';
 import FinalScreen from './screens/FinalScreen';
 import Background from './components/Background';
-import PhoneFrame from './components/PhoneFrame';
 import type { RootStackParamList } from './types';
 
 // Keep the native splash visible until we explicitly hide it. The intro
@@ -50,9 +49,6 @@ const introLogo = require('./assets/images/cps-logo.png');
 const imageAssetsToPreload = [
   require('./assets/images/cps-logo.png'),
   require('./assets/images/gray-pattern.png'),
-  require('./assets/images/red-background-9-16.png'),
-  require('./assets/images/red-background-75_9-16.png'),
-  require('./assets/images/red-background-33_9-16.png'),
   require('./assets/images/black-x.png'),
   require('./assets/images/white-x.png'),
   require('./assets/images/screw.png'),
@@ -169,20 +165,18 @@ export default function App() {
       </NavigationContainer>
       {!introComplete && (
         <View style={styles.introOverlay}>
-          <PhoneFrame>
-            <Background
-              source={introBackground}
-              style={styles.introContent}
-              resizeMode="stretch"
-            >
-              <View style={styles.introLogoSlot}>
-                <Image source={introLogo} style={styles.introLogo} contentFit="contain" />
-              </View>
-              <View style={styles.introGifSlot}>
-                <Image source={introGif} style={styles.introGif} contentFit="contain" />
-              </View>
-            </Background>
-          </PhoneFrame>
+          <Background
+            source={introBackground}
+            style={styles.introContent}
+            resizeMode="stretch"
+          >
+            <View style={styles.introLogoSlot}>
+              <Image source={introLogo} style={styles.introLogo} contentFit="contain" />
+            </View>
+            <View style={styles.introGifSlot}>
+              <Image source={introGif} style={styles.introGif} contentFit="contain" />
+            </View>
+          </Background>
         </View>
       )}
     </View>

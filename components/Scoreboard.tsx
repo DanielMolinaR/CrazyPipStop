@@ -5,8 +5,15 @@ import CpsRoundButton from './CpsRoundButton';
 import CpsButtonSmall from './CpsButtonSmall';
 import StyledText from './StyledText';
 
+import { useIsTablet } from '../hooks/useIsTablet';
 import blackX from '../assets/images/black-x.png';
 import whiteX from '../assets/images/white-x.png';
+
+// Cap the scoreboard's overall width on tablets — without this, each
+// item (sized as a percentage of full screen width) becomes huge and
+// the score circles + mistake squares look stretched. 480 pt keeps the
+// items at roughly phone-equivalent proportions.
+const TABLET_SCOREBOARD_MAX_WIDTH = 480;
 
 interface ScoreboardProps {
   victoryPoints: number;
@@ -14,7 +21,7 @@ interface ScoreboardProps {
   losingPoints: number;
   maxLosePoints: number;
   // Slight font-size tweak between Game and Resolve screens — defaults to the
-  // GameScreen size; ResolveScreen passes 26.
+  // GameScreen size; ResolveScreen passes 24.
   victoryFontSize?: number;
 }
 
@@ -23,12 +30,13 @@ export default function Scoreboard({
   maxVictoryPoints,
   losingPoints,
   maxLosePoints,
-  victoryFontSize = 24,
+  victoryFontSize = 22,
 }: ScoreboardProps) {
   const wrap = maxLosePoints < 5 ? '' : 'flex-wrap';
+  const isTablet = useIsTablet();
 
-  return (
-    <View className="h-[27%] flex items-center justify-center">
+  const rows = (
+    <>
       <View className="w-full basis-[31%] h-full flex flex-row gap-x-3 items-center justify-center">
         {Array.from({ length: maxVictoryPoints }, (_, i) => {
           const earned = victoryPoints > i;
@@ -73,6 +81,26 @@ export default function Scoreboard({
           );
         })}
       </View>
+    </>
+  );
+
+  // On phone, render the rows directly as children of the centred outer
+  // View — same structure as before any iPad work, so phone layout is
+  // unchanged. On tablet, wrap them in a 480 pt-wide centred container
+  // so each item's percentage width is taken against the cap rather
+  // than the full screen, keeping the circles / X squares phone-sized.
+  return (
+    <View className="h-[27%] flex items-center justify-center">
+      {isTablet ? (
+        <View
+          className="h-full flex items-center justify-center"
+          style={{ width: '100%', maxWidth: TABLET_SCOREBOARD_MAX_WIDTH }}
+        >
+          {rows}
+        </View>
+      ) : (
+        rows
+      )}
     </View>
   );
 }
