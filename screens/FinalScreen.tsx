@@ -24,12 +24,21 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Final'>;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 // `transformOrigin` is supported on both iOS and Android since RN 0.74,
-// but the public TypeScript style types haven't caught up. The cast is
-// purely to satisfy the compiler — it does nothing at runtime.
-// Pivot lands near the centre of the left-anchored screw (the badge
-// row uses `justify-start` / `justify-between` with the screw at the
-// left border, padded by `pl-3`).
-const transformOriginStyle = { transformOrigin: '8% 50%' } as unknown as object;
+// but the public TypeScript style types haven't caught up. The casts
+// are purely to satisfy the compiler — they do nothing at runtime.
+//
+// The DEFEAT badge rotates around the screw. The screw's relative
+// position inside the badge differs between phone and tablet because
+// the layout strategy does:
+//   - Phone uses justify-center, which keeps the screw + text group
+//     centred in a content-sized badge. The screw lands near ~25%
+//     from the left of the badge.
+//   - Tablet uses justify-start, which anchors the screw at the left
+//     border of a (slightly oversized) badge. The screw lands near
+//     ~8% from the left.
+// One transformOrigin per layout.
+const PHONE_TRANSFORM_ORIGIN = { transformOrigin: '25% 50%' } as unknown as object;
+const TABLET_TRANSFORM_ORIGIN = { transformOrigin: '8% 50%' } as unknown as object;
 
 async function navigateHomeAfterDelay(navigation: Props['navigation']) {
   await sleep(1000);
@@ -45,6 +54,14 @@ export default function FinalScreen({ route, navigation }: Props) {
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
   const isTablet = useIsTablet();
   const badgeStyle = isTablet ? { maxWidth: TABLET_BADGE_MAX_WIDTH } : undefined;
+  const transformOriginStyle = isTablet ? TABLET_TRANSFORM_ORIGIN : PHONE_TRANSFORM_ORIGIN;
+  // Tablet anchors the lone DEFEAT screw at the left border (for the
+  // rotation pivot). Phone stays with centred content as it always was.
+  const justifyClass = isTablet
+    ? userHasWon
+      ? 'justify-center'
+      : 'justify-start'
+    : 'justify-center';
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -128,20 +145,18 @@ export default function FinalScreen({ route, navigation }: Props) {
           >
             <CpsButtonBig>
               <View className="w-full bg-cps-yellow">
-                {/* DEFEAT uses `justify-start` so the lone screw stays
-                    anchored at the left border (the rotation pivot
-                    hinges on it). VICTORY uses `justify-center` so the
-                    screw + text + screw group is centred within the
-                    badge — avoids the off-centre look that
-                    `justify-start` gave on iPad. `justify-between`
-                    isn't used because it tells Yoga to spread the
-                    items to fill available space, which on iPad
-                    expanded the badge to the full screen width.
+                {/* Phone always centres the screw + text group.
+                    Tablet uses `justify-start` for DEFEAT so the lone
+                    screw stays anchored at the left border (so the
+                    rotation pivot lands on it), and `justify-center`
+                    for VICTORY so the screw + text + screw group is
+                    centred within the badge. `justify-between` isn't
+                    used because it tells Yoga to spread items to
+                    fill available space, which on iPad expanded the
+                    badge to the full screen width.
                     `pl-3 pr-3` keeps the screws a hair off the edge. */}
                 <View
-                  className={`w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 ${
-                    userHasWon ? 'justify-center' : 'justify-start'
-                  }`}
+                  className={`w-full basis-[15%] flex-row gap-x-3 items-center pl-3 pr-3 ${justifyClass}`}
                 >
                   <Image className="w-[10%] h-full" source={Screw} resizeMode="contain" />
                   <View className="rounded-md -mt-2">
