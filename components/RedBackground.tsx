@@ -32,12 +32,18 @@ const NOTCH_OUTLINE_WIDTH = 1.0; // viewBox units; vectorEffect keeps
 interface RedBackgroundProps {
   chevronStart: number;
   vDepth: number;
+  // Vertical rise (in viewBox units) of each stripe's centre apex
+  // above its edges — the angle that makes the stripes chevron
+  // inward, mirroring the bottom V-notch. Defaults to half the
+  // notch depth so the stripe slope echoes the notch slope.
+  chevronRise?: number;
   stripeCount?: number;
 }
 
 export default function RedBackground({
   chevronStart,
   vDepth,
+  chevronRise = vDepth * 50,
   stripeCount = DEFAULT_STRIPE_COUNT,
 }: RedBackgroundProps) {
   // The bottom edge of the red region is the V-notch: it dips up to
@@ -55,6 +61,15 @@ export default function RedBackground({
     return chevronStart * 100 + stripeAreaHeight * t;
   });
 
+  // Build each stripe as a 6-point chevron band rather than a flat
+  // rectangle: top-left → top-centre apex (raised by chevronRise) →
+  // top-right → bottom-right → bottom-centre apex (same rise) →
+  // bottom-left. The stripes form the inward chevron pattern that
+  // echoes the V-notch shape.
+  const stripePoints = (y: number) =>
+    `0,${y} 50,${y - chevronRise} 100,${y} ` +
+    `100,${y + STRIPE_THICKNESS} 50,${y - chevronRise + STRIPE_THICKNESS} 0,${y + STRIPE_THICKNESS}`;
+
   return (
     <Svg
       viewBox="0 0 100 100"
@@ -69,14 +84,7 @@ export default function RedBackground({
       <G clipPath="url(#redBgNotch)">
         <Rect x="0" y="0" width="100" height="100" fill={RED_BASE} />
         {stripes.map((y, i) => (
-          <Rect
-            key={i}
-            x="0"
-            y={y}
-            width="100"
-            height={STRIPE_THICKNESS}
-            fill={RED_STRIPE}
-          />
+          <Polygon key={i} points={stripePoints(y)} fill={RED_STRIPE} />
         ))}
       </G>
       {/* Black outline traces the two edges of the V-notch. Drawn on
