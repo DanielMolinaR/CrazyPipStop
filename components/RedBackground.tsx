@@ -23,15 +23,15 @@ const RED_BASE = '#D2160F'; // cps-red — solid background
 const RED_STRIPE = '#E84840'; // lighter pinkish red — chevron stripes
 const NOTCH_OUTLINE = '#000000';
 
-const DEFAULT_STRIPE_COUNT = 18;
+const DEFAULT_STRIPE_COUNT = 22;
 // Both widths below are in viewBox units, but the elements that use
 // them render with `vectorEffect="non-scaling-stroke"` — that keeps
 // the stroke a fixed pixel width regardless of how large or small
 // the SVG container is on screen. So stripes don't get thinner on
 // the smaller red regions and the notch border doesn't get thinner
 // on the bigger ones.
-const STRIPE_STROKE_WIDTH = 6;
-const NOTCH_OUTLINE_WIDTH = 4;
+const STRIPE_STROKE_WIDTH = 8;
+const NOTCH_OUTLINE_WIDTH = 6;
 
 interface RedBackgroundProps {
   chevronStart: number;
