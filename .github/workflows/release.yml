@@ -11,9 +11,15 @@
 #   - The `verify` job runs TypeScript type-checking, Jest tests, and
 #     ESLint. A failure in any of these blocks the release job.
 #   - The `release` job only starts after `verify` passes. It uses
-#     EAS to build the iOS + Android production binaries and submits
-#     them automatically (App Store Connect for iOS, Google Play
-#     internal track for Android).
+#     EAS to build the iOS + Android production binaries:
+#     * iOS auto-submits to App Store Connect via the configured
+#       Apple credentials.
+#     * Android builds the production AAB but does NOT auto-submit
+#       (no Google Play service-account JSON wired up yet).
+#       Download the AAB from the EAS Build dashboard and upload it
+#       to Play Console manually. When ready to automate, uncomment
+#       the submit.production.android block in eas.json and add
+#       --auto-submit to the Android step below.
 #
 # Build version codes / build numbers are auto-incremented per-platform
 # by EAS (see `autoIncrement: true` in eas.json's production profile),
@@ -102,14 +108,11 @@ jobs:
       - name: Build iOS production (auto-submit to App Store)
         run: eas build --profile production --platform ios --non-interactive --auto-submit
 
-      # Android still uses the `preview` profile (buildType: apk) so the
-      # output is a sideloadable APK rather than a Play-store AAB. No
-      # auto-submit because Google Play credentials aren't wired up yet;
-      # the APK lands on EAS Build's storage and is downloadable from
-      # https://expo.dev/accounts/danimr/projects/CpsApp/builds. When
-      # Play creds are ready, swap this to:
-      #   eas build --profile production --platform android \
-      #     --non-interactive --auto-submit
-      # and uncomment the android submit block in eas.json.
-      - name: Build Android APK (preview profile, no submit)
-        run: eas build --profile preview --platform android --non-interactive
+      # Builds the production AAB and stores it on EAS Build. No
+      # auto-submit: download the AAB from the EAS dashboard and
+      # upload it to Play Console manually. To enable auto-submit
+      # later, add --auto-submit here and uncomment the
+      # submit.production.android block in eas.json (requires a
+      # Google Play service-account JSON uploaded via `eas credentials`).
+      - name: Build Android production AAB (manual upload to Play Console)
+        run: eas build --profile production --platform android --non-interactive
