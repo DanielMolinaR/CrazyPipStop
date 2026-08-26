@@ -3,7 +3,7 @@
     "owner": "danimr",
     "name": "Crazy Pit Stop",
     "slug": "CpsApp",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/images/ios-crazy-icon.png",
     "userInterfaceStyle": "light",
@@ -27,8 +27,7 @@
         "foregroundImage": "./assets/images/ios-crazy-icon.png",
         "backgroundColor": "#D2160F"
       },
-      "package": "com.danimr.CpsApp",
-      "versionCode": 1
+      "package": "com.danimr.CpsApp"
     },
     "web": {
       "favicon": "./assets/images/crazy-splash.png"
