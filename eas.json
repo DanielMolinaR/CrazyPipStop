@@ -29,7 +29,7 @@
       }
     },*/
     "production": {
-      "autoIncrement": true,
+      "autoIncrement": false,
       "ios": {
         "resourceClass": "m-medium",
         "image": "macos-sequoia-15.6-xcode-26.2"

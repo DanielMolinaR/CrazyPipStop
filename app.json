@@ -27,7 +27,8 @@
         "foregroundImage": "./assets/images/ios-crazy-icon.png",
         "backgroundColor": "#D2160F"
       },
-      "package": "com.danimr.CpsApp"
+      "package": "com.danimr.CpsApp",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/images/crazy-splash.png"
