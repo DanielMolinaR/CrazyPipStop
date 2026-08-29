@@ -11,20 +11,39 @@
 #   - The `verify` job runs TypeScript type-checking, Jest tests, and
 #     ESLint. A failure in any of these blocks the release job.
 #   - The `release` job only starts after `verify` passes. It uses
-#     EAS to build the iOS + Android production binaries:
-#     * iOS auto-submits to App Store Connect via the configured
-#       Apple credentials.
-#     * Android builds the production AAB but does NOT auto-submit
-#       (no Google Play service-account JSON wired up yet).
-#       Download the AAB from the EAS Build dashboard and upload it
-#       to Play Console manually. When ready to automate, uncomment
-#       the submit.production.android block in eas.json and add
-#       --auto-submit to the Android step below.
+#     EAS to build the iOS + Android production binaries, each with
+#     `--auto-submit`:
+#     * iOS is delivered to App Store Connect / TestFlight. It is NOT
+#       released to the App Store — you still submit for review by
+#       hand.
+#     * Android is delivered to the Google Play `internal` testing
+#       track (see submit.production.android in eas.json). It does NOT
+#       reach the public — promote internal -> production in Play
+#       Console when you're happy with it.
+#     Both platforms therefore stop at "delivered, human publishes";
+#     a merge can never surprise real users.
 #
-# Build version codes / build numbers are auto-incremented per-platform
-# by EAS (see `autoIncrement: true` in eas.json's production profile),
-# so consecutive releases always have monotonically increasing
-# identifiers as required by the stores.
+# The Android step runs on `!cancelled()` rather than after a
+# successful iOS step, so an iOS failure no longer prevents the
+# Android build entirely. `!cancelled()` and not `always()`: the
+# latter would also fire after someone cancels the workflow, kicking
+# off a build-and-submit they just asked to stop.
+#
+# Versioning: `android.versionCode` and `ios.buildNumber` are stored
+# REMOTELY by EAS (`cli.appVersionSource: "remote"` in eas.json) and
+# bumped on every production build (`autoIncrement: true`). They
+# deliberately do NOT live in app.json — under the old `local` source
+# EAS incremented them inside this runner's throwaway checkout, which
+# is never committed, so every release re-shipped the same build
+# number. See docs/adr/0001-remote-app-version-source.md.
+#
+# The user-facing `expo.version` is a separate concern and stays a
+# manual, per-PR bump enforced by scripts/check-version-bump.mjs.
+#
+# The eas-cli major is pinned. This pipeline publishes to two app
+# stores unattended, so it should not silently adopt whatever
+# behaviour Expo shipped that morning — a CLI-version-dependent
+# default is exactly what caused the build-number bug above.
 #
 # Manual run: from the GitHub Actions tab pick "Release to app stores"
 # and click "Run workflow".
@@ -99,20 +118,18 @@ jobs:
       - name: Set up EAS CLI
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: ^22.0.0
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install deps
         run: npm ci
 
-      - name: Build iOS production (auto-submit to App Store)
+      - name: Build iOS production (auto-submit to App Store Connect)
         run: eas build --profile production --platform ios --non-interactive --auto-submit
 
-      # Builds the production AAB and stores it on EAS Build. No
-      # auto-submit: download the AAB from the EAS dashboard and
-      # upload it to Play Console manually. To enable auto-submit
-      # later, add --auto-submit here and uncomment the
-      # submit.production.android block in eas.json (requires a
-      # Google Play service-account JSON uploaded via `eas credentials`).
-      - name: Build Android production AAB (manual upload to Play Console)
-        run: eas build --profile production --platform android --non-interactive
+      # Runs even if the iOS step failed, so one platform's problem
+      # doesn't withhold the other's release. Skipped when the whole
+      # workflow is cancelled.
+      - name: Build Android production AAB (auto-submit to Play internal track)
+        if: ${{ !cancelled() }}
+        run: eas build --profile production --platform android --non-interactive --auto-submit

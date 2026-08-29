@@ -34,25 +34,39 @@ eas build:run -p android
 
 ## Release pipeline (automated)
 
-Every push to `main` (or a manual run from the GitHub Actions tab) triggers
+Merging a PR into `main` (or a manual run from the GitHub Actions tab) triggers
 `.github/workflows/release.yml`, which:
 
 1. **Verifies** the codebase — `npx tsc --noEmit`, `npm test -- --ci`, `npm run lint`. A failure in any of these blocks the release.
-2. **Builds + submits** the production profile to both stores via EAS — App Store Connect for iOS and the Google Play `internal` track for Android. Build numbers are auto-incremented per platform (`autoIncrement: true` on the production build profile in `eas.json`).
+2. **Builds + submits** the production profile to both stores via EAS — App Store Connect / TestFlight for iOS, and the Google Play `internal` testing track for Android. Neither is published to users automatically: iOS still needs a manual submit-for-review, and Android needs a manual internal → production promotion in Play Console.
+
+The trigger is `pull_request: closed` gated on `merged == true`, so a PR closed
+without merging ships nothing, and a direct push to `main` (rare, admin-only)
+does not fire a release.
+
+Build numbers (`android.versionCode` / `ios.buildNumber`) are **not stored in
+this repo** — `cli.appVersionSource` is `"remote"` in `eas.json`, so EAS owns
+them server-side and auto-increments on every production build. The user-facing
+`expo.version` is a separate, manual per-PR bump. See
+[docs/adr/0001-remote-app-version-source.md](docs/adr/0001-remote-app-version-source.md).
 
 ### One-time setup before the workflow can run
 
 1. Generate an Expo access token at <https://expo.dev/accounts/danimr/settings/access-tokens> and add it as a GitHub repo secret named `EXPO_TOKEN` (Settings → Secrets and variables → Actions).
 2. Install the EAS CLI locally (one-time): `npm install -g eas-cli` (or use `npx eas-cli ...` ad-hoc). Then `eas login` to your Expo account, followed by `eas credentials` — that opens an interactive menu where you upload the Apple App Store Connect API key (.p8 file) for iOS and the Google Play service-account JSON for Android. Credentials live on EAS's servers, not in this repo.
-3. Make sure your trunk branch is named `main`. If it isn't, change the branch name on the `on.push.branches` line in `release.yml`.
+3. Make sure your trunk branch is named `main`. If it isn't, change it on the `on.pull_request.branches` line in `release.yml`.
 
 ### Cadence and quota
 
-EAS Build's free tier caps the number of remote builds per month. iOS and Android each count as a separate build, so a single push to `main` consumes two slots. Avoid pushing release-trigger commits in rapid succession — if you're iterating, branch off and only merge when the diff is genuinely ready to ship. If you want a deliberate gate, the workflow also supports manual `workflow_dispatch`; you can switch off the `push:` trigger entirely if pure-manual releases feel safer.
+EAS Build's free tier caps the number of remote builds per month. iOS and Android each count as a separate build, so a single merge into `main` consumes two slots. Since the trigger is a PR merge rather than a push, batching work into one PR instead of several is the lever here — keep iterating on the branch and merge once the diff is genuinely ready to ship.
 
 ### Skipping a release
 
-For commits that don't warrant a build (docs-only changes, README tweaks), include `[skip ci]` in the commit message and GitHub Actions will skip the run. Or do those changes on a side branch and merge them with a non-release strategy.
+Don't rely on `[skip ci]` — it suppresses `push`-triggered runs, not the
+`pull_request: closed` event this workflow listens to. To avoid a release,
+either don't merge the PR, or accept the build. Every merge into `main` is a
+release, by design; that's what the per-PR version bump gate exists to make
+deliberate.
 
 ## Project structure
 
